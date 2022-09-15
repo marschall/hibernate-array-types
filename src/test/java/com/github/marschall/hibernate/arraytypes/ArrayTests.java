@@ -10,12 +10,15 @@ import javax.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateOracleConfiguration;
 import com.github.marschall.hibernate.arraytypes.entity.User;
 
 @Transactional
-@SpringJUnitConfig
+@Rollback
+@SpringJUnitConfig(SpringHibernateOracleConfiguration.class)
 class ArrayTests {
 
   // https://vladmihalcea.com/bind-custom-hibernate-parameter-type-jpa-query/
@@ -40,7 +43,8 @@ class ArrayTests {
             .createQuery(
                 "SELECT u "
               + "FROM User u "
-              + "WHERE id = ANY(SELECT column_value FROM TABLE(:userids))", User.class)
+              + "WHERE id = ANY(SELECT column_value FROM TABLE(:userids))"
+              + "ORDER BY id", User.class)
             .setParameter("userids", OracleIntArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());
@@ -51,8 +55,9 @@ class ArrayTests {
     List<User> users = this.entityManager
             .createQuery(
                     "SELECT u "
-                 +  "FROM User u "
-                 +  "WHERE id IN(SELECT column_value FROM TABLE(:userids))", User.class)
+                 + "FROM User u "
+                 + "WHERE id IN(SELECT column_value FROM TABLE(:userids))"
+                 + "ORDER BY id", User.class)
             .setParameter("userids", OracleIntArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());

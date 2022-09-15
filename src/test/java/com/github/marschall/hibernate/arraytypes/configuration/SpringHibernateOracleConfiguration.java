@@ -15,6 +15,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import oracle.jdbc.OracleConnection;
+
 @Configuration
 public class SpringHibernateOracleConfiguration {
 
@@ -29,7 +31,8 @@ public class SpringHibernateOracleConfiguration {
     dataSource.setUsername("jdbc");
     dataSource.setPassword("Cent-Quick-Space-Bath-8");
     Properties connectionProperties = new Properties();
-    connectionProperties.setProperty("oracle.net.disableOob", "true");
+//    connectionProperties.setProperty("oracle.net.disableOob", "true");
+    connectionProperties.setProperty(OracleConnection.CONNECTION_PROPERTY_THIN_NET_DISABLE_OUT_OF_BAND_BREAK, "true");
     dataSource.setConnectionProperties(connectionProperties);
     return dataSource;
   }
@@ -65,5 +68,5 @@ public class SpringHibernateOracleConfiguration {
   public JpaDialect jpaDialect() {
     return new HibernateJpaDialect();
   }
-  
+
 }

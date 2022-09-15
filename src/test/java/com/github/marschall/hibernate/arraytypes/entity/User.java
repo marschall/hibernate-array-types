@@ -5,7 +5,7 @@ import javax.persistence.Id;
 
 @Entity(name = "user_table")
 public class User {
-  
+
   @Id
   private Integer id;
 

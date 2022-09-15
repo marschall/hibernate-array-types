@@ -6,11 +6,20 @@ import java.util.Arrays;
 import org.hibernate.jpa.TypedParameterValue;
 import org.hibernate.type.CustomType;
 import org.hibernate.type.Type;
+import org.hibernate.usertype.UserType;
 
+/**
+ * {@link UserType} that binds {@code int[]} to an Oracle array.
+ */
 public final class OracleIntArrayType extends AbstractOracleArrayType {
 
-  public OracleIntArrayType(String typeName) {
-    super(typeName);
+  /**
+   * Constructs a new OracleIntArrayType.
+   * 
+   * @param oracleArrayTypeName the name of the oracle array type to use to bind the array
+   */
+  public OracleIntArrayType(String oracleArrayTypeName) {
+    super(oracleArrayTypeName);
   }
 
   @Override
@@ -42,8 +51,14 @@ public final class OracleIntArrayType extends AbstractOracleArrayType {
     return target;
   }
 
-  public static Type newType(String typeName) {
-    return new CustomType(new OracleIntArrayType(typeName));
+  /**
+   * Convenience method that creates an instance of this class adapted as a {@link Type}.
+   * 
+   * @param oracleArrayTypeName  the name of the oracle array type to use to bind the array
+   * @return an instance of this class adapted as a {@link Type}
+   */
+  public static Type newType(String oracleArrayTypeName) {
+    return new CustomType(new OracleIntArrayType(oracleArrayTypeName));
   }
 
   public static TypedParameterValue newParameter(String typeName, int... values) {
