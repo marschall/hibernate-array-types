@@ -1,4 +1,4 @@
-package com.github.marschall.hibernate.arraytypes;
+package com.github.marschall.hibernate.arraytypes.usertype;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;

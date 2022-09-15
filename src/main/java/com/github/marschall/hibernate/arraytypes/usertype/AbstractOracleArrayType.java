@@ -1,4 +1,4 @@
-package com.github.marschall.hibernate.arraytypes;
+package com.github.marschall.hibernate.arraytypes.usertype;
 
 import java.io.Serializable;
 import java.sql.Array;
