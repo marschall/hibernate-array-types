@@ -1,7 +1,11 @@
-package com.github.marschall.hibernate.arraytypes.usertype;
+package com.github.marschall.hibernate.arraytypes;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+
+import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.type.CustomType;
+import org.hibernate.type.Type;
 
 public final class OracleIntArrayType extends AbstractOracleArrayType {
 
@@ -10,7 +14,7 @@ public final class OracleIntArrayType extends AbstractOracleArrayType {
   }
 
   @Override
-  public Class returnedClass() {
+  public Class<?> returnedClass() {
     return int[].class;
   }
 
@@ -36,6 +40,14 @@ public final class OracleIntArrayType extends AbstractOracleArrayType {
   public Object replace(Object original, Object target, Object owner) {
     System.arraycopy(original, 0, target, 0, Array.getLength(original));
     return target;
+  }
+
+  public static Type newType(String typeName) {
+    return new CustomType(new OracleIntArrayType(typeName));
+  }
+
+  public static TypedParameterValue newParameter(String typeName, int... values) {
+    return new TypedParameterValue(newType(typeName), values);
   }
 
 }

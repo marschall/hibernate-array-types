@@ -1,4 +1,4 @@
-package com.github.marschall.hibernate.arraytypes.usertype;
+package com.github.marschall.hibernate.arraytypes;
 
 import java.io.Serializable;
 import java.sql.Array;
@@ -16,7 +16,7 @@ import oracle.jdbc.OracleConnection;
 
 abstract class AbstractOracleArrayType implements UserType {
 
-  // https://vladmihalcea.com/bind-custom-hibernate-parameter-type-jpa-query/
+  private static final int[] SQL_TYPES = new int[] {Types.ARRAY};
 
   private final String typeName;
 
@@ -26,7 +26,7 @@ abstract class AbstractOracleArrayType implements UserType {
 
   @Override
   public int[] sqlTypes() {
-    return new int[] {Types.ARRAY};
+    return SQL_TYPES;
   }
 
   @Override
