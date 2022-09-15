@@ -57,6 +57,7 @@ class ArrayTests {
                     "SELECT u "
                  + "FROM User u "
                  + "WHERE id IN(SELECT column_value FROM TABLE(:userids))"
+//                 + "WHERE id IN(SELECT column_value FROM function('TABLE', :userids))"
                  + "ORDER BY id", User.class)
             .setParameter("userids", OracleIntArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
             .getResultList();

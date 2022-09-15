@@ -61,6 +61,13 @@ public final class OracleObjectArrayType extends AbstractOracleArrayType {
     return new CustomType(new OracleObjectArrayType(oracleArrayTypeName));
   }
 
+  /**
+   * Convenience method that creates an instance of this class wrapped in a {@link TypedParameterValue}
+   * so that it can be passed as a bind parameter.
+   * 
+   * @param oracleArrayTypeName  the name of the oracle array type to use to bind the array
+   * @return a TypedParameterValue binding the given value to an array of the given type name
+   */
   public static TypedParameterValue newParameter(String typeName, Object... values) {
     return new TypedParameterValue(newType(typeName), values);
   }
