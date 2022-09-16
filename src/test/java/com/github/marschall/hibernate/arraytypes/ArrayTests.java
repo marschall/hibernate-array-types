@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -25,7 +25,7 @@ class ArrayTests {
 
   private static final String ARRAY_TYPE = "test_array_type";
 
-  @Autowired
+  @PersistenceContext
   private EntityManager entityManager;
   
   @BeforeEach
@@ -61,6 +61,19 @@ class ArrayTests {
                  + "ORDER BY id", User.class)
             .setParameter("userids", OracleIntArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
             .getResultList();
+    assertEquals(5, users.size());
+  }
+
+  @Test
+  void bindParameterInReferenceType() {
+    List<User> users = this.entityManager
+        .createQuery(
+                  "SELECT u "
+                + "FROM User u "
+                + "WHERE id IN(SELECT column_value FROM TABLE(:userids))"
+                + "ORDER BY id", User.class)
+        .setParameter("userids", OracleObjectArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
+        .getResultList();
     assertEquals(5, users.size());
   }
 
