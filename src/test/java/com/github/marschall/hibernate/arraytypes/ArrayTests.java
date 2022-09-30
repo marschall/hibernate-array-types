@@ -23,11 +23,11 @@ class ArrayTests {
 
   // https://vladmihalcea.com/bind-custom-hibernate-parameter-type-jpa-query/
 
-  private static final String ARRAY_TYPE = "test_array_type";
+  private static final String ARRAY_TYPE = "TEST_ARRAY_TYPE";
 
   @PersistenceContext
   private EntityManager entityManager;
-  
+
   @BeforeEach
   void setUp() {
     for (int i = 0; i < 10; i++) {
@@ -39,12 +39,11 @@ class ArrayTests {
 
   @Test
   void bindParameterAny() {
-    List<User> users = this.entityManager
-            .createQuery(
-                "SELECT u "
-              + "FROM User u "
-              + "WHERE id = ANY(SELECT column_value FROM TABLE(:userids))"
-              + "ORDER BY id", User.class)
+    List<User> users = this.entityManager.createNativeQuery(
+                    "SELECT u.* "
+                            + "FROM user_table u "
+                            + "WHERE u.id = ANY(SELECT column_value FROM TABLE(:userids))"
+                            + "ORDER BY u.id", User.class)
             .setParameter("userids", OracleIntArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());
@@ -52,13 +51,11 @@ class ArrayTests {
 
   @Test
   void bindParameterIn() {
-    List<User> users = this.entityManager
-            .createQuery(
-                    "SELECT u "
-                 + "FROM User u "
-                 + "WHERE id IN(SELECT column_value FROM TABLE(:userids))"
-//                 + "WHERE id IN(SELECT column_value FROM function('TABLE', :userids))"
-                 + "ORDER BY id", User.class)
+    List<User> users = this.entityManager.createNativeQuery(
+                    "SELECT u.* "
+                 + "FROM user_table u "
+                 + "WHERE u.id IN(SELECT column_value FROM TABLE(:userids))"
+                 + "ORDER BY u.id", User.class)
             .setParameter("userids", OracleIntArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());
@@ -66,12 +63,11 @@ class ArrayTests {
 
   @Test
   void bindParameterInReferenceType() {
-    List<User> users = this.entityManager
-        .createQuery(
-                  "SELECT u "
-                + "FROM User u "
-                + "WHERE id IN(SELECT column_value FROM TABLE(:userids))"
-                + "ORDER BY id", User.class)
+    List<User> users = this.entityManager.createNativeQuery(
+                  "SELECT u.* "
+                + "FROM user_table u "
+                + "WHERE u.id IN(SELECT column_value FROM TABLE(:userids))"
+                + "ORDER BY u.id", User.class)
         .setParameter("userids", OracleObjectArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
         .getResultList();
     assertEquals(5, users.size());

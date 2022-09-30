@@ -16,7 +16,7 @@ import oracle.jdbc.OracleConnection;
 
 /**
  * Abstract base class for {@link UserType}s that bind Java arrays to Oracle arrays.
- * 
+ *
  * @see OracleConnection#createOracleArray(String, Object)
  */
 abstract class AbstractOracleArrayType implements UserType {
@@ -39,7 +39,12 @@ abstract class AbstractOracleArrayType implements UserType {
   public Object nullSafeGet(ResultSet rs, String[] names,
           SharedSessionContractImplementor session, Object owner)
           throws SQLException {
-    return rs.getArray(names[0]);
+    Array array = rs.getArray(names[0]);
+    if (array != null) {
+      return array.getArray();
+    } else {
+      return null;
+    }
   }
 
   @Override

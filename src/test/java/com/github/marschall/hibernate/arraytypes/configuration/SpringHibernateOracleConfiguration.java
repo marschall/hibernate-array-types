@@ -28,8 +28,10 @@ public class SpringHibernateOracleConfiguration {
     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
     dataSource.setSuppressClose(true);
     dataSource.setUrl("jdbc:oracle:thin:@localhost:1521/ORCLPDB1");
-    dataSource.setUsername("jdbc");
-    dataSource.setPassword("Cent-Quick-Space-Bath-8");
+//    dataSource.setUsername("jdbc");
+//    dataSource.setPassword("Cent-Quick-Space-Bath-8");
+    dataSource.setUsername("spring_jdbc_oracle");
+    dataSource.setPassword("TWO-Cyff-yech-Byov-SEMICOLON");
     Properties connectionProperties = new Properties();
 //    connectionProperties.setProperty("oracle.net.disableOob", "true");
     connectionProperties.setProperty(OracleConnection.CONNECTION_PROPERTY_THIN_NET_DISABLE_OUT_OF_BAND_BREAK, "true");
@@ -49,18 +51,18 @@ public class SpringHibernateOracleConfiguration {
   public PlatformTransactionManager txManager(EntityManagerFactory emf) {
     JpaTransactionManager transactionManager = new JpaTransactionManager(emf);
     transactionManager.setDataSource(this.dataSource());
-    transactionManager.setJpaDialect(jpaDialect());
+    transactionManager.setJpaDialect(this.jpaDialect());
     transactionManager.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
     return transactionManager;
   }
-  
+
   @Bean
   public LocalContainerEntityManagerFactoryBean entityManager() {
     LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
     bean.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
-    bean.setJpaDialect(jpaDialect());
+    bean.setJpaDialect(this.jpaDialect());
     bean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-    bean.setDataSource(dataSource());
+    bean.setDataSource(this.dataSource());
     return bean;
   }
 
