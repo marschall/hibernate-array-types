@@ -6,5 +6,5 @@ DIRECTORY=$(realpath $DIRECTORY)
 docker run --name oracle-hibernate-array \
  -p 1521:1521 -p 5500:5500 \
  --shm-size=1g \
- -v ${DIRECTORY}/sql:/docker-entrypoint-initdb.d/setup \
+ -v ${DIRECTORY}/sql/oracle:/docker-entrypoint-initdb.d/setup \
  -d oracle/database:19.3.0-se2

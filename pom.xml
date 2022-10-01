@@ -305,6 +305,12 @@
       <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>net.ttddyy</groupId>
+      <artifactId>datasource-proxy</artifactId>
+      <version>1.8</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <distributionManagement>

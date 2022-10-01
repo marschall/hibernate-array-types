@@ -41,7 +41,9 @@ abstract class AbstractOracleArrayType implements UserType {
           throws SQLException {
     Array array = rs.getArray(names[0]);
     if (array != null) {
-      return array.getArray();
+      Object value = array.getArray();
+      array.free();
+      return value;
     } else {
       return null;
     }

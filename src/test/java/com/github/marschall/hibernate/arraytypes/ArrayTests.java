@@ -8,22 +8,28 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.type.CustomType;
+import org.hibernate.type.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateOracleConfiguration;
+import com.github.marschall.hibernate.arraytypes.configuration.PostgresConfiguration;
+import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateConfiguration;
 import com.github.marschall.hibernate.arraytypes.entity.User;
 
 @Transactional
 @Rollback
-@SpringJUnitConfig(SpringHibernateOracleConfiguration.class)
+@TestPropertySource(properties = "persistence-unit-name=postgres-batched")
+@SpringJUnitConfig({PostgresConfiguration.class, SpringHibernateConfiguration.class})
 class ArrayTests {
 
-  // https://vladmihalcea.com/bind-custom-hibernate-parameter-type-jpa-query/
+  private static final Type GENERIC_ARRAY_TYPE = new CustomType(new ArrayType(null));
 
-  private static final String ARRAY_TYPE = "TEST_ARRAY_TYPE";
+  private static final Type INTEGER_ARRAY_TYPE = new CustomType(new ArrayType("INTEGER"));
 
   @PersistenceContext
   private EntityManager entityManager;
@@ -38,38 +44,26 @@ class ArrayTests {
   }
 
   @Test
-  void bindParameterAny() {
+  void bindParameterAnyGeneric() {
     List<User> users = this.entityManager.createNativeQuery(
                     "SELECT u.* "
-                            + "FROM user_table u "
-                            + "WHERE u.id = ANY(SELECT column_value FROM TABLE(:userids))"
-                            + "ORDER BY u.id", User.class)
-            .setParameter("userids", OracleIntArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
+                    + "FROM user_table u "
+                    + "WHERE u.id = ANY(:userids)"
+                    + "ORDER BY u.id", User.class)
+            .setParameter("userids", new TypedParameterValue(GENERIC_ARRAY_TYPE, new Integer[] {1, 3, 5, 7, 9}))
             .getResultList();
     assertEquals(5, users.size());
   }
 
   @Test
-  void bindParameterIn() {
+  void bindParameterAnyInteger() {
     List<User> users = this.entityManager.createNativeQuery(
                     "SELECT u.* "
-                 + "FROM user_table u "
-                 + "WHERE u.id IN(SELECT column_value FROM TABLE(:userids))"
-                 + "ORDER BY u.id", User.class)
-            .setParameter("userids", OracleIntArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
+                    + "FROM user_table u "
+                    + "WHERE u.id = ANY(:userids)"
+                    + "ORDER BY u.id", User.class)
+            .setParameter("userids", new TypedParameterValue(INTEGER_ARRAY_TYPE, new Integer[] {1, 3, 5, 7, 9}))
             .getResultList();
-    assertEquals(5, users.size());
-  }
-
-  @Test
-  void bindParameterInReferenceType() {
-    List<User> users = this.entityManager.createNativeQuery(
-                  "SELECT u.* "
-                + "FROM user_table u "
-                + "WHERE u.id IN(SELECT column_value FROM TABLE(:userids))"
-                + "ORDER BY u.id", User.class)
-        .setParameter("userids", OracleObjectArrayType.newParameter(ARRAY_TYPE, 1, 3, 5, 7, 9))
-        .getResultList();
     assertEquals(5, users.size());
   }
 

@@ -1,6 +1,6 @@
 
 ALTER SESSION SET CONTAINER = ORCLPDB1;
-ALTER SESSION SET CURRENT_SCHEMA = spring_jdbc_oracle;
+ALTER SESSION SET CURRENT_SCHEMA = jdbc;
 
 BEGIN
   -- array of scalar values
