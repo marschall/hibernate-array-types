@@ -1,7 +1,6 @@
 package com.github.marschall.hibernate.arraytypes;
 
 import java.math.BigDecimal;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,13 +9,20 @@ import java.sql.Types;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.jpa.TypedParameterValue;
 import org.hibernate.procedure.ParameterMisuseException;
+import org.hibernate.type.CustomType;
+import org.hibernate.type.Type;
 import org.hibernate.usertype.UserType;
 
 /**
  * {@link UserType} that binds {@code Object[]} to a SQL array.
  */
 public final class ArrayType extends AbstractReferenceArrayType {
+
+  public static final UserType INSTANCE = new ArrayType();
+
+  public static final Type TYPE = new CustomType(INSTANCE);
 
   private final String typeName;
 
@@ -46,7 +52,7 @@ public final class ArrayType extends AbstractReferenceArrayType {
       Connection connection = session.getJdbcConnectionAccess().obtainConnection();
       try {
         Dialect dialect = session.getJdbcServices().getDialect();
-        Array array = connection.createArrayOf(this.getTypeName(value, dialect), (Object[]) value);
+        java.sql.Array array = connection.createArrayOf(this.getTypeName(value, dialect), (Object[]) value);
         st.setArray(index, array);
       } finally {
         session.getJdbcConnectionAccess().releaseConnection(connection);
@@ -68,7 +74,7 @@ public final class ArrayType extends AbstractReferenceArrayType {
     if (!clazz.isArray()) {
       throw new ParameterMisuseException("value must be an array but was: " + clazz);
     }
-    Class<?> componentType = clazz.getComponentType();
+    Class<?> componentType = inferComponentType(clazz, value);
     if (componentType == String.class) {
       return dialect.getTypeName(Types.VARCHAR);
     } else if (componentType == Short.class) {
@@ -92,6 +98,36 @@ public final class ArrayType extends AbstractReferenceArrayType {
     }
   }
 
+  private static Class<?> inferComponentType(Class<? extends Object> clazz, Object value) {
+    Class<?> componentType = clazz.getComponentType();
+    if (componentType.isPrimitive()) {
+      throw new ParameterMisuseException("component type must be reference but was: " + componentType);
+    }
+    if (componentType == Object.class) {
+      int length = java.lang.reflect.Array.getLength(value);
+      if (length == 0) {
+        throw new ParameterMisuseException("can not infer component type of empty array");
+      }
+      Class<?> candidate = null;
+      for (int i = 0; i < length; i++) {
+        Object element = java.lang.reflect.Array.get(value, i);
+        if (element != null) {
+          if (candidate == null) {
+            candidate = element.getClass();
+          } else if (candidate != element.getClass()) {
+            throw new ParameterMisuseException("can not infer component type of heterogenious array");
+          }
+        }
+      }
+      if (candidate == null) {
+        throw new ParameterMisuseException("can not infer component type of array with only null");
+      }
+      return candidate;
+    } else {
+      return componentType;
+    }
+  }
+
   private static String stripPrecision(String typeName) {
     int parenthesesIndex = typeName.indexOf('(');
     if (parenthesesIndex == -1) {
@@ -99,6 +135,39 @@ public final class ArrayType extends AbstractReferenceArrayType {
     } else {
       return typeName.substring(0, parenthesesIndex);
     }
+  }
+
+  /**
+   * Convenience method that creates an instance of this class adapted as a {@link Type}.
+   *
+   * @param typeName the SQL name of the type the elements of the array map to
+   * @return an instance of this class adapted as a {@link Type}
+   */
+  public static Type newType(String typeName) {
+    return new CustomType(new ArrayType(typeName));
+  }
+
+  /**
+   * Convenience method that creates an instance of this class wrapped in a {@link TypedParameterValue}
+   * so that it can be passed as a bind parameter.
+   *
+   *
+   * @param typeName the SQL name of the type the elements of the array map to
+   * @return a TypedParameterValue binding the given value to an array
+   * @see Connection#createArrayOf(String, Object[])
+   */
+  public static TypedParameterValue newParameter(String typeName, Object... values) {
+    return new TypedParameterValue(newType(typeName), values);
+  }
+
+  /**
+   * Convenience method that creates an instance of this class wrapped in a {@link TypedParameterValue}
+   * so that it can be passed as a bind parameter.
+   *
+   * @return a TypedParameterValue binding the given value to an array
+   */
+  public static TypedParameterValue newParameter(Object... values) {
+    return new TypedParameterValue(TYPE, values);
   }
 
 }
