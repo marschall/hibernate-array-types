@@ -1,0 +1,63 @@
+package com.github.marschall.hibernate.arraytypes;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+
+import com.github.marschall.hibernate.arraytypes.configuration.PostgresConfiguration;
+import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateConfiguration;
+import com.github.marschall.hibernate.arraytypes.entity.User;
+
+@Transactional
+@Rollback
+@TestPropertySource(properties = "persistence-unit-name=postgres-batched")
+@SpringJUnitConfig({PostgresConfiguration.class, SpringHibernateConfiguration.class})
+class PostgresArrayTests {
+
+  @PersistenceContext
+  private EntityManager entityManager;
+
+  @BeforeEach
+  void setUp() {
+    for (int i = 0; i < 10; i++) {
+      User user = new User();
+      user.setId(i);
+      this.entityManager.persist(user);
+    }
+  }
+
+  @Test
+  void bindParameterAnyInt() {
+    List<User> users = this.entityManager.createNativeQuery(
+                    "SELECT u.* "
+                    + "FROM user_table u "
+                    + "WHERE u.id = ANY(:userids)"
+                    + "ORDER BY u.id", User.class)
+            .setParameter("userids", PgIntArrayType.newParameter(1, 3, 5, 7, 9))
+            .getResultList();
+    assertEquals(5, users.size());
+  }
+
+  @Test
+  void bindParameterAnyLong() {
+    List<User> users = this.entityManager.createNativeQuery(
+            "SELECT u.* "
+                    + "FROM user_table u "
+                    + "WHERE u.id = ANY(:userids)"
+                    + "ORDER BY u.id", User.class)
+            .setParameter("userids", PgLongArrayType.newParameter(1L, 3L, 5L, 7L, 9L))
+            .getResultList();
+    assertEquals(5, users.size());
+  }
+
+}

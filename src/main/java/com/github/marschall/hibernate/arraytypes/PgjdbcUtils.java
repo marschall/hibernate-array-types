@@ -7,19 +7,18 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-
-import oracle.jdbc.OracleConnection;
+import org.postgresql.PGConnection;
 
 /**
- * Utility methods for Oracle JDBC driver.
+ * Utility methods for PostgreSQL JDBC driver.
  */
-final class OjdbcUtils {
+final class PgjdbcUtils {
 
-  private OjdbcUtils() {
+  private PgjdbcUtils() {
     throw new AssertionError("not instantiable");
   }
 
-  static void nullSafeSet(PreparedStatement st, Object value, int index, String oracleArrayTypeName,
+  static void nullSafeSet(PreparedStatement st, Object value, int index, String typeName,
           SharedSessionContractImplementor session)
           throws SQLException {
 
@@ -30,8 +29,8 @@ final class OjdbcUtils {
 
     Connection connection = session.getJdbcConnectionAccess().obtainConnection();
     try {
-      OracleConnection oracleConnection = connection.unwrap(OracleConnection.class);
-      Array array = oracleConnection.createOracleArray(oracleArrayTypeName, value);
+      PGConnection pgConnection = connection.unwrap(PGConnection.class);
+      Array array = pgConnection.createArrayOf(typeName, value);
       st.setArray(index, array);
     } finally {
       session.getJdbcConnectionAccess().releaseConnection(connection);
