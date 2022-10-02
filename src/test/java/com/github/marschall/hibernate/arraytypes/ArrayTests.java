@@ -2,6 +2,7 @@ package com.github.marschall.hibernate.arraytypes;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -44,13 +45,38 @@ class ArrayTests {
   }
 
   @Test
-  void bindParameterAnyGeneric() {
+  void bindParameterAnyGenericInteger() {
     List<User> users = this.entityManager.createNativeQuery(
                     "SELECT u.* "
                     + "FROM user_table u "
                     + "WHERE u.id = ANY(:userids)"
                     + "ORDER BY u.id", User.class)
             .setParameter("userids", new TypedParameterValue(GENERIC_ARRAY_TYPE, new Integer[] {1, 3, 5, 7, 9}))
+            .getResultList();
+    assertEquals(5, users.size());
+  }
+
+  @Test
+  void bindParameterAnyGenericLong() {
+    List<User> users = this.entityManager.createNativeQuery(
+            "SELECT u.* "
+                    + "FROM user_table u "
+                    + "WHERE u.id = ANY(:userids)"
+                    + "ORDER BY u.id", User.class)
+            .setParameter("userids", new TypedParameterValue(GENERIC_ARRAY_TYPE, new Long[] {1L, 3L, 5L, 7L, 9L}))
+            .getResultList();
+    assertEquals(5, users.size());
+  }
+
+  @Test
+  void bindParameterAnyGenericBigDecimal() {
+    List<User> users = this.entityManager.createNativeQuery(
+            "SELECT u.* "
+                    + "FROM user_table u "
+                    + "WHERE u.id = ANY(:userids)"
+                    + "ORDER BY u.id", User.class)
+            .setParameter("userids", new TypedParameterValue(GENERIC_ARRAY_TYPE,
+                    new BigDecimal[] {BigDecimal.valueOf(1L), BigDecimal.valueOf(3L), BigDecimal.valueOf(5L), BigDecimal.valueOf(7L), BigDecimal.valueOf(9L)}))
             .getResultList();
     assertEquals(5, users.size());
   }

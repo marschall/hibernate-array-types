@@ -1,5 +1,9 @@
 #!/bin/bash
 # https://pythonspeed.com/articles/faster-db-tests/
+
+DIRECTORY=`dirname $0`
+DIRECTORY=$(realpath $DIRECTORY)
+
 docker run --name postgres-hibernate-array \
  -e 'POSTGRES_PASSWORD=Cent-Quick-Space-Bath-8' \
  -e POSTGRES_USER=jdbc \

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
-import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +11,7 @@ import java.sql.Types;
 import java.util.Arrays;
 
 import org.hibernate.HibernateException;
+import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.procedure.ParameterMisuseException;
 import org.hibernate.usertype.UserType;
@@ -22,6 +22,7 @@ public final class ArrayType implements UserType {
   private final String typeName;
 
   /**
+   * Constructs a new {@link ArrayType} with the given element type name.
    *
    * @param typeName the SQL name of the type the elements of the array map to
    *
@@ -29,6 +30,13 @@ public final class ArrayType implements UserType {
    */
   public ArrayType(String typeName) {
     this.typeName = typeName;
+  }
+
+  /**
+   * Constructs a new {@link ArrayType} with an inferred element type name.
+   */
+  public ArrayType() {
+    this.typeName = null;
   }
 
   @Override
@@ -81,7 +89,8 @@ public final class ArrayType implements UserType {
     if (value != null) {
       Connection connection = session.getJdbcConnectionAccess().obtainConnection();
       try {
-        Array array = connection.createArrayOf(this.getTypeName(value), (Object[]) value);
+        Dialect dialect = session.getJdbcServices().getDialect();
+        Array array = connection.createArrayOf(this.getTypeName(value, dialect), (Object[]) value);
         st.setArray(index, array);
       } finally {
         session.getJdbcConnectionAccess().releaseConnection(connection);
@@ -91,35 +100,48 @@ public final class ArrayType implements UserType {
     }
   }
 
-  private String getTypeName(Object value) {
+  private String getTypeName(Object value, Dialect dialect) {
     if (this.typeName != null) {
       return this.typeName;
     }
-    return inferType(value);
+    return inferType(value, dialect);
   }
 
-  private static String inferType(Object value) {
+  private static String inferType(Object value, Dialect dialect) {
     Class<? extends Object> clazz = value.getClass();
-    if (clazz.isArray()) {
+    if (!clazz.isArray()) {
       throw new ParameterMisuseException("value must be an array but was: " + clazz);
     }
     Class<?> componentType = clazz.getComponentType();
     if (componentType == String.class) {
-      return JDBCType.VARCHAR.getName();
+      return dialect.getTypeName(Types.VARCHAR);
     } else if (componentType == Short.class) {
-      return JDBCType.SMALLINT.getName();
+      return dialect.getTypeName(Types.SMALLINT);
     } else if (componentType == Integer.class) {
-      return JDBCType.INTEGER.getName();
+      return dialect.getTypeName(Types.INTEGER);
     } else if (componentType == Long.class) {
-      return JDBCType.BIGINT.getName();
+      return dialect.getTypeName(Types.BIGINT);
     } else if (componentType == BigDecimal.class) {
-      return JDBCType.DECIMAL.getName();
-    } else if ((componentType == Float.class) || (componentType == Double.class)) {
-      return JDBCType.NUMERIC.getName();
-    } else if ((componentType == Boolean.class)) {
-      return JDBCType.BOOLEAN.getName();
+      return stripPrecision(dialect.getTypeName(Types.DECIMAL));
+//    } else if ((componentType == Float.class) || (componentType == Double.class)) {
+//      return dialect.getTypeName(Types.NUMERIC);
+    } else if (componentType == Float.class) {
+      return dialect.getTypeName(Types.FLOAT);
+    } else if (componentType == Double.class) {
+      return dialect.getTypeName(Types.DATALINK);
+    } else if (componentType == Boolean.class) {
+      return dialect.getTypeName(Types.BOOLEAN);
     } else {
       throw new ParameterMisuseException("unuspported component type: " + componentType);
+    }
+  }
+
+  private static String stripPrecision(String typeName) {
+    int parenthesesIndex = typeName.indexOf('(');
+    if (parenthesesIndex == -1) {
+      return typeName;
+    } else {
+      return typeName.substring(0, parenthesesIndex);
     }
   }
 
@@ -144,7 +166,5 @@ public final class ArrayType implements UserType {
     System.arraycopy(original, 0, target, 0, java.lang.reflect.Array.getLength(original));
     return target;
   }
-
-
 
 }
