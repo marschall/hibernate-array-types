@@ -113,6 +113,4 @@ public final class PgArrayType implements UserType {
     return target;
   }
 
-
-
 }
