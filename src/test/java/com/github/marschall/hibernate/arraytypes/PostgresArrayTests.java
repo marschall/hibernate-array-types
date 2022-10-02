@@ -6,11 +6,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -18,23 +15,12 @@ import com.github.marschall.hibernate.arraytypes.configuration.PostgresConfigura
 import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateConfiguration;
 import com.github.marschall.hibernate.arraytypes.entity.User;
 
-@Transactional
-@Rollback
 @TestPropertySource(properties = "persistence-unit-name=postgres-batched")
 @SpringJUnitConfig({PostgresConfiguration.class, SpringHibernateConfiguration.class})
-class PostgresArrayTests {
+class PostgresArrayTests extends AbstractArrayTests {
 
   @PersistenceContext
   private EntityManager entityManager;
-
-  @BeforeEach
-  void setUp() {
-    for (int i = 0; i < 10; i++) {
-      User user = new User();
-      user.setId(i);
-      this.entityManager.persist(user);
-    }
-  }
 
   @Test
   void bindParameterAnyInt() {

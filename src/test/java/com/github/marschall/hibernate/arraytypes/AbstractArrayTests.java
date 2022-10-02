@@ -15,18 +15,12 @@ import org.hibernate.type.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import com.github.marschall.hibernate.arraytypes.configuration.PostgresConfiguration;
-import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateConfiguration;
 import com.github.marschall.hibernate.arraytypes.entity.User;
 
 @Transactional
 @Rollback
-@TestPropertySource(properties = "persistence-unit-name=postgres-batched")
-@SpringJUnitConfig({PostgresConfiguration.class, SpringHibernateConfiguration.class})
-class ArrayTests {
+abstract class AbstractArrayTests {
 
   private static final Type GENERIC_ARRAY_TYPE = new CustomType(new ArrayType(null));
 
