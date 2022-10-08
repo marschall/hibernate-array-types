@@ -36,7 +36,7 @@ public final class OracleObjectArrayType extends AbstractReferenceArrayType {
   /**
    * Convenience method that creates an instance of this class adapted as a {@link Type}.
    *
-   * @param oracleArrayTypeName  the name of the oracle array type to use to bind the array
+   * @param oracleArrayTypeName the name of the oracle array type to use to bind the array
    * @return an instance of this class adapted as a {@link Type}
    */
   public static Type newType(String oracleArrayTypeName) {
@@ -47,10 +47,13 @@ public final class OracleObjectArrayType extends AbstractReferenceArrayType {
    * Convenience method that creates an instance of this class wrapped in a {@link TypedParameterValue}
    * so that it can be passed as a bind parameter.
    *
-   * @param oracleArrayTypeName  the name of the oracle array type to use to bind the array
+   * @param oracleArrayTypeName the name of the oracle array type to use to bind the array
+   * @param values the Java array of elements to bind
+   * @param <T> the element type
    * @return a TypedParameterValue binding the given value to an array of the given type name
    */
-  public static TypedParameterValue newParameter(String typeName, Object... values) {
+  @SafeVarargs
+  public static <T> TypedParameterValue newParameter(String typeName, T... values) {
     return new TypedParameterValue(newType(typeName), values);
   }
 

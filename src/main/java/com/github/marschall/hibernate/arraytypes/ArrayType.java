@@ -151,12 +151,14 @@ public final class ArrayType extends AbstractReferenceArrayType {
    * Convenience method that creates an instance of this class wrapped in a {@link TypedParameterValue}
    * so that it can be passed as a bind parameter.
    *
-   *
    * @param typeName the SQL name of the type the elements of the array map to
+   * @param values the Java array of elements to bind
+   * @param <T> the element type
    * @return a TypedParameterValue binding the given value to an array
    * @see Connection#createArrayOf(String, Object[])
    */
-  public static TypedParameterValue newParameter(String typeName, Object... values) {
+  @SafeVarargs
+  public static <T> TypedParameterValue newParameter(String typeName, T... values) {
     return new TypedParameterValue(newType(typeName), values);
   }
 
@@ -164,9 +166,12 @@ public final class ArrayType extends AbstractReferenceArrayType {
    * Convenience method that creates an instance of this class wrapped in a {@link TypedParameterValue}
    * so that it can be passed as a bind parameter.
    *
+   * @param values the Java array of elements to bind
+   * @param <T> the element type
    * @return a TypedParameterValue binding the given value to an array
    */
-  public static TypedParameterValue newParameter(Object... values) {
+  @SafeVarargs
+  public static <T> TypedParameterValue newParameter(T... values) {
     return new TypedParameterValue(TYPE, values);
   }
 
