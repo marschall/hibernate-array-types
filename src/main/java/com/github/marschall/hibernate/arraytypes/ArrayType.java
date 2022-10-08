@@ -9,20 +9,23 @@ import java.sql.Types;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.jpa.TypedParameterValue;
 import org.hibernate.procedure.ParameterMisuseException;
+import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.CustomType;
 import org.hibernate.type.Type;
+import org.hibernate.type.spi.TypeConfiguration;
 import org.hibernate.usertype.UserType;
 
 /**
  * {@link UserType} that binds {@code Object[]} to a SQL array.
  */
 public final class ArrayType extends AbstractReferenceArrayType {
+  
+  private static final TypeConfiguration TYPE_CONFIGURATION = new TypeConfiguration();
 
-  public static final UserType INSTANCE = new ArrayType();
+  public static final UserType<Object[]> INSTANCE = new ArrayType();
 
-  public static final Type TYPE = new CustomType(INSTANCE);
+  public static final Type TYPE = new CustomType<>(INSTANCE, TYPE_CONFIGURATION);
 
   private final String typeName;
 
@@ -43,11 +46,10 @@ public final class ArrayType extends AbstractReferenceArrayType {
   public ArrayType() {
     this.typeName = null;
   }
-
+  
   @Override
-  public void nullSafeSet(PreparedStatement st, Object value, int index,
-          SharedSessionContractImplementor session)
-          throws HibernateException, SQLException {
+  public void nullSafeSet(PreparedStatement st, Object[] value, int index, SharedSessionContractImplementor session)
+      throws SQLException {
     if (value != null) {
       Connection connection = session.getJdbcConnectionAccess().obtainConnection();
       try {
@@ -144,7 +146,7 @@ public final class ArrayType extends AbstractReferenceArrayType {
    * @return an instance of this class adapted as a {@link Type}
    */
   public static Type newType(String typeName) {
-    return new CustomType(new ArrayType(typeName));
+    return new CustomType<>(new ArrayType(typeName), TYPE_CONFIGURATION);
   }
 
   /**
@@ -158,8 +160,8 @@ public final class ArrayType extends AbstractReferenceArrayType {
    * @see Connection#createArrayOf(String, Object[])
    */
   @SafeVarargs
-  public static <T> TypedParameterValue newParameter(String typeName, T... values) {
-    return new TypedParameterValue(newType(typeName), values);
+  public static <T> TypedParameterValue<Object[]> newParameter(String typeName, T... values) {
+    return new TypedParameterValue<>(newType(typeName), values);
   }
 
   /**
@@ -171,7 +173,7 @@ public final class ArrayType extends AbstractReferenceArrayType {
    * @return a TypedParameterValue binding the given value to an array
    */
   @SafeVarargs
-  public static <T> TypedParameterValue newParameter(T... values) {
+  public static <T> TypedParameterValue<Object[]> newParameter(T... values) {
     return new TypedParameterValue(TYPE, values);
   }
 

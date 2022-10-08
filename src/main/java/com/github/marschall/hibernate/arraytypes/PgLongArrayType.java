@@ -15,7 +15,7 @@ import org.hibernate.usertype.UserType;
  */
 public final class PgLongArrayType extends AbstractLongArrayType {
 
-  public static final UserType INSTANCE = new PgLongArrayType();
+  public static final UserType<long[]> INSTANCE = new PgLongArrayType();
 
   public static final Type TYPE = new CustomType(INSTANCE);
 
@@ -25,11 +25,11 @@ public final class PgLongArrayType extends AbstractLongArrayType {
   private PgLongArrayType() {
     super();
   }
-
+  
   @Override
-  public void nullSafeSet(PreparedStatement st, Object value, int index,
-          SharedSessionContractImplementor session)
-          throws HibernateException, SQLException {
+  public void nullSafeSet(PreparedStatement st, long[] value, int index, SharedSessionContractImplementor session)
+      throws SQLException {
+    
     PgjdbcUtils.nullSafeSet(st, value, index, "bigint", session);
   }
 
@@ -39,7 +39,7 @@ public final class PgLongArrayType extends AbstractLongArrayType {
    *
    * @return a TypedParameterValue binding the given value to an array
    */
-  public static TypedParameterValue newParameter(long... values) {
+  public static TypedParameterValue<long[]> newParameter(long... values) {
     return new TypedParameterValue(TYPE, values);
   }
 

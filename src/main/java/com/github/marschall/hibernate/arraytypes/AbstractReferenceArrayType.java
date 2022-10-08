@@ -5,29 +5,29 @@ import java.util.Arrays;
 /**
  * Abstract base class for arrays of reference types.
  */
-abstract class AbstractReferenceArrayType extends AbstractArrayType {
+abstract class AbstractReferenceArrayType extends AbstractArrayType<Object[]> {
 
   @Override
-  public Class<?> returnedClass() {
+  public Class<Object[]> returnedClass() {
     return Object[].class;
   }
 
   @Override
-  public boolean equals(Object x, Object y) {
-    return Arrays.equals((Object[]) x, (Object[]) y);
+  public boolean equals(Object[] x, Object[] y) {
+    return Arrays.equals(x, y);
   }
 
   @Override
-  public int hashCode(Object x) {
-    return Arrays.hashCode((Object[]) x);
+  public int hashCode(Object[] x) {
+    return Arrays.hashCode(x);
   }
 
   @Override
-  public Object deepCopy(Object value) {
+  public Object[] deepCopy(Object[] value) {
     if (value == null) {
       return null;
     }
-    return ((Object[]) value).clone();
+    return value.clone();
   }
 
 }

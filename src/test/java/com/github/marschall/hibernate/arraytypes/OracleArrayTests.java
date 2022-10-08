@@ -4,21 +4,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-
-import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.marschall.hibernate.arraytypes.configuration.OracleConfiguration;
 import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateConfiguration;
 import com.github.marschall.hibernate.arraytypes.entity.User;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Transactional
 @Rollback
@@ -62,7 +62,7 @@ class OracleArrayTests {
                  + "FROM user_table u "
                  + "WHERE u.id IN(SELECT column_value FROM TABLE(:userids))"
                  + "ORDER BY u.id", User.class)
-            .setParameter("userids", new TypedParameterValue(ARRAY_TYPE, new int[] {1, 3, 5, 7, 9}))
+            .setParameter("userids", new TypedParameterValue<>(ARRAY_TYPE, new int[] {1, 3, 5, 7, 9}))
             .getResultList();
     assertEquals(5, users.size());
   }

@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.CustomType;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.UserType;
@@ -24,14 +24,14 @@ public final class OracleObjectArrayType extends AbstractReferenceArrayType {
   public OracleObjectArrayType(String oracleArrayTypeName) {
     this.oracleArrayTypeName = oracleArrayTypeName;
   }
-
+  
   @Override
-  public void nullSafeSet(PreparedStatement st, Object value, int index,
-          SharedSessionContractImplementor session)
-          throws SQLException {
-
+  public void nullSafeSet(PreparedStatement st, Object[] value, int index, SharedSessionContractImplementor session)
+      throws SQLException {
+    
     OjdbcUtils.nullSafeSet(st, value, index, this.oracleArrayTypeName, session);
   }
+
 
   /**
    * Convenience method that creates an instance of this class adapted as a {@link Type}.
@@ -53,8 +53,8 @@ public final class OracleObjectArrayType extends AbstractReferenceArrayType {
    * @return a TypedParameterValue binding the given value to an array of the given type name
    */
   @SafeVarargs
-  public static <T> TypedParameterValue newParameter(String typeName, T... values) {
-    return new TypedParameterValue(newType(typeName), values);
+  public static <T> TypedParameterValue<Object[]> newParameter(String typeName, T... values) {
+    return new TypedParameterValue<>(newType(typeName), values);
   }
 
 }

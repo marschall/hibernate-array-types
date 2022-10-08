@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.jpa.TypedParameterValue;
+import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.CustomType;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.UserType;
@@ -24,12 +24,10 @@ public final class OracleIntArrayType extends AbstractIntArrayType {
   public OracleIntArrayType(String oracleArrayTypeName) {
     this.oracleArrayTypeName = oracleArrayTypeName;
   }
-
+  
   @Override
-  public void nullSafeSet(PreparedStatement st, Object value, int index,
-          SharedSessionContractImplementor session)
-          throws SQLException {
-
+  public void nullSafeSet(PreparedStatement st, int[] value, int index, SharedSessionContractImplementor session)
+      throws SQLException {
     OjdbcUtils.nullSafeSet(st, value, index, this.oracleArrayTypeName, session);
   }
 
@@ -50,7 +48,7 @@ public final class OracleIntArrayType extends AbstractIntArrayType {
    * @param oracleArrayTypeName  the name of the oracle array type to use to bind the array
    * @return a TypedParameterValue binding the given value to an array of the given type name
    */
-  public static TypedParameterValue newParameter(String typeName, int... values) {
+  public static TypedParameterValue<int[]> newParameter(String typeName, int... values) {
     return new TypedParameterValue(newType(typeName), values);
   }
 

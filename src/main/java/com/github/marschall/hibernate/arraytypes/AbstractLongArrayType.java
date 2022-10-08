@@ -5,29 +5,29 @@ import java.util.Arrays;
 /**
  * Abstract base class for {@code long[]} types.
  */
-abstract class AbstractLongArrayType extends AbstractArrayType {
+abstract class AbstractLongArrayType extends AbstractArrayType<long[]> {
 
   @Override
-  public Class<?> returnedClass() {
+  public Class<long[]> returnedClass() {
     return long[].class;
   }
 
   @Override
-  public boolean equals(Object x, Object y) {
-    return Arrays.equals((long[]) x, (long[]) y);
+  public boolean equals(long[] x, long[] y) {
+    return Arrays.equals(x, y);
   }
 
   @Override
-  public int hashCode(Object x) {
-    return Arrays.hashCode((long[]) x);
+  public int hashCode(long[] x) {
+    return Arrays.hashCode(x);
   }
 
   @Override
-  public Object deepCopy(Object value) {
+  public long[] deepCopy(long[] value) {
     if (value == null) {
       return null;
     }
-    return ((long[]) value).clone();
+    return value.clone();
   }
 
 }

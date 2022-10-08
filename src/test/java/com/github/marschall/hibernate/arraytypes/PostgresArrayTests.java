@@ -4,9 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -14,6 +11,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import com.github.marschall.hibernate.arraytypes.configuration.PostgresConfiguration;
 import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateConfiguration;
 import com.github.marschall.hibernate.arraytypes.entity.User;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @TestPropertySource(properties = "persistence-unit-name=postgres-batched")
 @SpringJUnitConfig({PostgresConfiguration.class, SpringHibernateConfiguration.class})

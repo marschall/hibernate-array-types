@@ -9,7 +9,7 @@
     <class>com.github.marschall.hibernate.arraytypes.entity.User</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" />
       <property name="hibernate.jdbc.batch_size" value="10" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
@@ -23,7 +23,7 @@
     <class>com.github.marschall.hibernate.arraytypes.entity.User</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
       <property name="hibernate.jdbc.batch_size" value="10" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
