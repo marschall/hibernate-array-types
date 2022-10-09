@@ -1,7 +1,16 @@
-Hibernate Array Types
+Hibernate Array Types [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.marschall/hibernate-array-types/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.marschall/hibernate-array-types) [![Javadocs](https://www.javadoc.io/badge/com.github.marschall/hibernate-array-types.svg)](https://www.javadoc.io/doc/com.github.marschall/hibernate-array-types)  [![Build Status](https://travis-ci.org/marschall/hibernate-array-types.svg?branch=master)](https://travis-ci.org/marschall/hibernate-array-types)
 =====================
 
 User types for binding IN lists to arrays in Hibernate.
+
+```xml
+<dependency>
+  <groupId>com.github.marschall</groupId>
+  <artifactId>hibernate-array-types</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
 
 Advantages
 ----------
