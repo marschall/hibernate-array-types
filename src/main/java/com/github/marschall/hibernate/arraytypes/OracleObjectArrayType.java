@@ -53,8 +53,8 @@ public final class OracleObjectArrayType extends AbstractReferenceArrayType {
    * @return a TypedParameterValue binding the given value to an array of the given type name
    */
   @SafeVarargs
-  public static <T> TypedParameterValue newParameter(String typeName, T... values) {
-    return new TypedParameterValue(newType(typeName), values);
+  public static <T> TypedParameterValue newParameter(String oracleArrayTypeName, T... values) {
+    return new TypedParameterValue(newType(oracleArrayTypeName), values);
   }
 
 }

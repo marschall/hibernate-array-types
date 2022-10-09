@@ -20,8 +20,7 @@ final class OjdbcUtils {
   }
 
   static void nullSafeSet(PreparedStatement st, Object value, int index, String oracleArrayTypeName,
-          SharedSessionContractImplementor session)
-          throws SQLException {
+          SharedSessionContractImplementor session) throws SQLException {
 
     if (value == null) {
       st.setNull(index, Types.ARRAY);

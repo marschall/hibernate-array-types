@@ -48,10 +48,11 @@ public final class OracleLongArrayType extends AbstractLongArrayType {
    * so that it can be passed as a bind parameter.
    *
    * @param oracleArrayTypeName  the name of the oracle array type to use to bind the array
+   * @param values the Java array of elements to bind
    * @return a TypedParameterValue binding the given value to an array of the given type name
    */
-  public static TypedParameterValue newParameter(String typeName, long... values) {
-    return new TypedParameterValue(newType(typeName), values);
+  public static TypedParameterValue newParameter(String oracleArrayTypeName, long... values) {
+    return new TypedParameterValue(newType(oracleArrayTypeName), values);
   }
 
 }

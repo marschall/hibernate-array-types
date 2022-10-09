@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.jpa.TypedParameterValue;
@@ -46,8 +45,7 @@ public final class ArrayType extends AbstractReferenceArrayType {
 
   @Override
   public void nullSafeSet(PreparedStatement st, Object value, int index,
-          SharedSessionContractImplementor session)
-          throws HibernateException, SQLException {
+          SharedSessionContractImplementor session) throws SQLException {
     if (value != null) {
       Connection connection = session.getJdbcConnectionAccess().obtainConnection();
       try {

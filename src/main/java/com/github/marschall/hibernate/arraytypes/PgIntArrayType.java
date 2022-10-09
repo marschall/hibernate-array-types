@@ -3,7 +3,6 @@ package com.github.marschall.hibernate.arraytypes;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.jpa.TypedParameterValue;
 import org.hibernate.type.CustomType;
@@ -29,7 +28,7 @@ public final class PgIntArrayType extends AbstractIntArrayType {
   @Override
   public void nullSafeSet(PreparedStatement st, Object value, int index,
           SharedSessionContractImplementor session)
-          throws HibernateException, SQLException {
+          throws SQLException {
     PgjdbcUtils.nullSafeSet(st, value, index, "integer", session);
   }
 
@@ -37,6 +36,7 @@ public final class PgIntArrayType extends AbstractIntArrayType {
    * Convenience method that creates an instance of this class wrapped in a {@link TypedParameterValue}
    * so that it can be passed as a bind parameter.
    *
+   * @param values the Java array of elements to bind
    * @return a TypedParameterValue binding the given value to an array
    */
   public static TypedParameterValue newParameter(int... values) {
