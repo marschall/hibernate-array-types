@@ -4,7 +4,7 @@
 
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-array-types</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <inceptionYear>2022</inceptionYear>
   <url>https://github.com/marschall/hibernate-array-types</url>
   <name>Hibernate Array Types</name>
