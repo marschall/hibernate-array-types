@@ -27,6 +27,7 @@ abstract class AbstractArrayTests {
     for (int i = 0; i < 10; i++) {
       User user = new User();
       user.setId(i);
+      user.setLogin("login" + (i + 1));
       this.entityManager.persist(user);
     }
   }
@@ -79,5 +80,29 @@ abstract class AbstractArrayTests {
             .getResultList();
     assertEquals(5, users.size());
   }
+
+  @Test
+  void bindParameterAnyString() {
+    List<User> users = this.entityManager.createNativeQuery(
+        "SELECT u.* "
+            + " FROM user_table u"
+            + " WHERE u.login = ANY(:logins)"
+            + " ORDER BY u.id", User.class)
+        .setParameter("logins", ArrayType.newParameter("VARCHAR", "login1", "login3", "login5", "login7", "login9"))
+        .getResultList();
+    assertEquals(5, users.size());
+  }
+
+//  @Test
+//  void bindParameterAnyInteger() {
+//    List<User> users = this.entityManager.createNativeQuery(
+//                    "SELECT u.* "
+//                    + " FROM user_table u"
+//                    + " WHERE u.id = ANY(:userids)"
+//                    + " ORDER BY u.id", User.class)
+//            .setParameter("userids", ArrayType.newParameter("INTEGER", 1, 3, 5, 7, 9))
+//            .getResultList();
+//    assertEquals(5, users.size());
+//  }
 
 }
