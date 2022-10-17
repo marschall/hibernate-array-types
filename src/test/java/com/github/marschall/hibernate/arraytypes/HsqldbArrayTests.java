@@ -44,44 +44,32 @@ class HsqldbArrayTests {
                     + " FROM user_table u"
                     + " WHERE u.id IN(UNNEST(:userids))"
                     + " ORDER BY u.id", User.class)
-            .setParameter("userids", ArrayType.newParameter(1, 3, 5, 7, 9))
+            .setParameter("userids", ArrayTypes.newIntegerArrayParameter(1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());
   }
 
   @Test
-  void bindParameterAnyGenericLong() {
+  void bindParameterAnyLong() {
     List<User> users = this.entityManager.createNativeQuery(
                     "SELECT u.*"
                     + " FROM user_table u"
                     + " WHERE u.id IN(UNNEST(:userids))"
                     + " ORDER BY u.id", User.class)
-            .setParameter("userids", ArrayType.newParameter(1L, 3L, 5L, 7L, 9L))
+            .setParameter("userids", ArrayTypes.newLongArrayParameter(1L, 3L, 5L, 7L, 9L))
             .getResultList();
     assertEquals(5, users.size());
   }
 
   @Test
-  void bindParameterAnyGenericBigDecimal() {
+  void bindParameterAnyBigDecimal() {
     List<User> users = this.entityManager.createNativeQuery(
                     "SELECT u.* "
                     + " FROM user_table u"
                     + " WHERE u.id IN(UNNEST(:userids))"
                     + " ORDER BY u.id", User.class)
-            .setParameter("userids", ArrayType.newParameter(
+            .setParameter("userids", ArrayTypes.newBigDecimalArrayParameter(
                     BigDecimal.valueOf(1L), BigDecimal.valueOf(3L), BigDecimal.valueOf(5L), BigDecimal.valueOf(7L), BigDecimal.valueOf(9L)))
-            .getResultList();
-    assertEquals(5, users.size());
-  }
-
-  @Test
-  void bindParameterAnyInteger() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.* "
-                    + " FROM user_table u"
-                    + " WHERE u.id IN(UNNEST(:userids))"
-                    + " ORDER BY u.id", User.class)
-            .setParameter("userids", ArrayType.newParameter("INTEGER", 1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());
   }

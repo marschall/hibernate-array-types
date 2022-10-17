@@ -10,5 +10,4 @@ import com.github.marschall.hibernate.arraytypes.configuration.SpringHibernateCo
 @SpringJUnitConfig({H2Configuration.class, SpringHibernateConfiguration.class})
 class H2ArrayTests extends AbstractArrayTests {
 
-
 }

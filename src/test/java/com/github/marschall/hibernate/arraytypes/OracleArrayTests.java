@@ -4,8 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import org.hibernate.dialect.OracleArrayJdbcType;
+import org.hibernate.query.BindableType;
 import org.hibernate.query.TypedParameterValue;
+import org.hibernate.type.BasicArrayType;
+import org.hibernate.type.JavaObjectType;
 import org.hibernate.type.Type;
+import org.hibernate.type.descriptor.java.ArrayJavaType;
+import org.hibernate.type.descriptor.java.ObjectJavaType;
+import org.hibernate.type.descriptor.jdbc.ArrayJdbcType;
+import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
+import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.Rollback;
@@ -41,6 +50,15 @@ class OracleArrayTests {
       user.setId(i);
       this.entityManager.persist(user);
     }
+  }
+
+  private static TypedParameterValue<Object[]> newTypedParameterValue(Object[] value) {
+    return new TypedParameterValue<Object[]>(newBindableType(), value);
+  }
+
+  private static BindableType<Object[]> newBindableType() {
+    JdbcType jdbcType = new OracleArrayJdbcType(ARRAY_TYPE_NAME, IntegerJdbcType.INSTANCE);
+    return new BasicArrayType<Object>(JavaObjectType.INSTANCE , jdbcType, new ArrayJavaType<>(ObjectJavaType.INSTANCE));
   }
 
   @Test
