@@ -12,12 +12,17 @@ import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.postgresql.PGConnection;
 
+/**
+ * Abstract base class for {@link ValueBinder}s for arrays of primitive types on PostgreSQL.
+ *
+ * @param <T> the array type to bind
+ */
 abstract class AbstractPgPrimitiveArrayValueBinder<T> implements ValueBinder<T> {
 
   private final JdbcType elementJdbcType;
-  private final JavaType elementJavaType;
+  private final JavaType<?> elementJavaType;
 
-  protected AbstractPgPrimitiveArrayValueBinder(JdbcType elementJdbcType, JavaType elementJavaType) {
+  protected AbstractPgPrimitiveArrayValueBinder(JdbcType elementJdbcType, JavaType<?> elementJavaType) {
     this.elementJdbcType = elementJdbcType;
     this.elementJavaType = elementJavaType;
   }

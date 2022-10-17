@@ -2,6 +2,7 @@ package com.github.marschall.hibernate.arraytypes;
 
 import org.hibernate.dialect.OracleArrayJdbcType;
 import org.hibernate.query.BindableType;
+import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.BasicArrayType;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.java.ArrayJavaType;
@@ -13,6 +14,10 @@ import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.hibernate.type.internal.BasicTypeImpl;
 
+/**
+ * Utility methods for creating {@link TypedParameterValue} instances on arrays
+ * on Oracle.
+ */
 public final class OracleArrayTypes {
 
   private OracleArrayTypes() {
@@ -47,6 +52,9 @@ public final class OracleArrayTypes {
         new OraclePrimitiveArrayValueBinder<>(typeName));
   }
 
+  /**
+   * Specialization of {@link OracleArrayJdbcType} for arrays of primitive types.
+   */
   static final class OraclePrimitiveArrayType extends OracleArrayJdbcType {
 
     private final String typeName;

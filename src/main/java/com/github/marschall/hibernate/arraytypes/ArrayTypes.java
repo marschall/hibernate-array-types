@@ -53,18 +53,42 @@ public final class ArrayTypes {
     throw new AssertionError("not instantiable");
   }
 
+  /**
+   * Creates a new {@link TypedParameterValue} for an {@code Integer[]}
+   * 
+   * @param value the parameter value, not {@code null}
+   * @return the {@link TypedParameterValue}
+   */
   public static TypedParameterValue<Integer[]> newIntegerArrayParameter(Integer... value) {
     return new TypedParameterValue<>(INTEGER_ARRAY_TYPE, value);
   }
 
+  /**
+   * Creates a new {@link TypedParameterValue} for an {@code Long[]}
+   * 
+   * @param value the parameter value, not {@code null}
+   * @return the {@link TypedParameterValue}
+   */
   public static TypedParameterValue<Long[]> newLongArrayParameter(Long... value) {
     return new TypedParameterValue<>(LONG_ARRAY_TYPE, value);
   }
 
+  /**
+   * Creates a new {@link TypedParameterValue} for an {@code BigDecimal[]}
+   * 
+   * @param value the parameter value, not {@code null}
+   * @return the {@link TypedParameterValue}
+   */
   public static TypedParameterValue<BigDecimal[]> newBigDecimalArrayParameter(BigDecimal... value) {
     return new TypedParameterValue<>(BIG_DECIMAL_ARRAY_TYPE, value);
   }
-  
+
+  /**
+   * Creates a new {@link TypedParameterValue} for an {@code String[]}
+   * 
+   * @param value the parameter value, not {@code null}
+   * @return the {@link TypedParameterValue}
+   */
   public static TypedParameterValue<String[]> newLongArrayParameter(String... value) {
     return new TypedParameterValue<>(STRING_ARRAY_TYPE, value);
   }

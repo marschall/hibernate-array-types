@@ -45,10 +45,22 @@ public final class PgArrayTypes {
     throw new AssertionError("not instantiable");
   }
 
+  /**
+   * Creates a new {@link TypedParameterValue} for an {@code int[]}
+   * 
+   * @param value the parameter value, not {@code null}
+   * @return the {@link TypedParameterValue}
+   */
   public static TypedParameterValue<int[]> newIntegerArrayParameter(int... value) {
     return new TypedParameterValue<>(INTEGER_ARRAY_TYPE, value);
   }
 
+  /**
+   * Creates a new {@link TypedParameterValue} for an {@code long[]}
+   * 
+   * @param value the parameter value, not {@code null}
+   * @return the {@link TypedParameterValue}
+   */
   public static TypedParameterValue<long[]> newLongArrayParameter(long... value) {
     return new TypedParameterValue<>(LONG_ARRAY_TYPE, value);
   }

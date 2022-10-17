@@ -10,6 +10,11 @@ import org.hibernate.type.descriptor.WrapperOptions;
 
 import oracle.jdbc.OracleConnection;
 
+/**
+ * {@link ValueBinder} for binding arrays of primitive values on Oracle.
+ *
+ * @param <T> the array type to bind
+ */
 final class OraclePrimitiveArrayValueBinder<T> implements ValueBinder<T> {
 
   private final String typeName;

@@ -29,8 +29,7 @@ entityManager.createNativeQuery("""
                      WHERE u.id = ANY(:userids)
                      ORDER BY u.id
                     """, User.class)
-              // you can leave out the "INTEGER" parameter and let ArrayType figure out the actual type
-             .setParameter("userids", ArrayType.newParameter("INTEGER", 1, 3, 5, 7, 9))
+             .setParameter("userids", ArrayTypes.newIntegerArrayParameter(1, 3, 5, 7, 9))
              .getResultList()
 ```
 
@@ -41,13 +40,16 @@ Oracle
 ------
 
 ```java
+// we recommend you create a constant for this
+BindableType<int[]> intArrayType = OracleArrayTypes.newIntArrayType(ARRAY_TYPE_NAME)
+
 entityManager.createNativeQuery("""
                     SELECT u.*
                       FROM user_table u
                      WHERE u.id = ANY(SELECT column_value FROM TABLE(:userids))
                      ORDER BY u.id
                     """, User.class)
-             .setParameter("userids", OracleIntArrayType.newParameter("USER_ID_TYPE", 1, 3, 5, 7, 9))
+             .setParameter("userids", new TypedParameterValue<>(intArrayType, new int[] {1, 3, 5, 7, 9}))
              .getResultList();
 ```
 
@@ -67,8 +69,7 @@ entityManager.createNativeQuery("""
                      WHERE u.id IN(UNNEST(:userids))
                      ORDER BY u.id
                     """, User.class)
-              // you can leave out the "INTEGER" parameter and let ArrayType figure out the actual type
-             .setParameter("userids", ArrayType.newParameter("INTEGER", 1, 3, 5, 7, 9))
+             .setParameter("userids", ArrayTypes.newIntegerArrayParameter(1, 3, 5, 7, 9))
              .getResultList();
 ```
 
