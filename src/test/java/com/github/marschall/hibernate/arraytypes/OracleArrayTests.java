@@ -48,6 +48,7 @@ class OracleArrayTests {
     for (int i = 0; i < 10; i++) {
       User user = new User();
       user.setId(i);
+      user.setLogin("login" + (i + 1));
       this.entityManager.persist(user);
     }
   }

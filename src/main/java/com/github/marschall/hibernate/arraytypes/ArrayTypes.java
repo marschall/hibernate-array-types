@@ -9,10 +9,12 @@ import org.hibernate.type.descriptor.java.ArrayJavaType;
 import org.hibernate.type.descriptor.java.BigDecimalJavaType;
 import org.hibernate.type.descriptor.java.IntegerJavaType;
 import org.hibernate.type.descriptor.java.LongJavaType;
+import org.hibernate.type.descriptor.java.StringJavaType;
 import org.hibernate.type.descriptor.jdbc.ArrayJdbcType;
 import org.hibernate.type.descriptor.jdbc.BigIntJdbcType;
 import org.hibernate.type.descriptor.jdbc.DecimalJdbcType;
 import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
+import org.hibernate.type.descriptor.jdbc.VarcharJdbcType;
 import org.hibernate.type.internal.BasicTypeImpl;
 
 /**
@@ -25,6 +27,8 @@ public final class ArrayTypes {
   private static final BindableType<Long[]> LONG_ARRAY_TYPE;
 
   private static final BindableType<BigDecimal[]> BIG_DECIMAL_ARRAY_TYPE;
+  
+  private static final BindableType<String[]> STRING_ARRAY_TYPE;
 
   static {
     INTEGER_ARRAY_TYPE = new BasicArrayType<>(
@@ -39,6 +43,10 @@ public final class ArrayTypes {
         new BasicTypeImpl<>(BigDecimalJavaType.INSTANCE, DecimalJdbcType.INSTANCE),
         new ArrayJdbcType(DecimalJdbcType.INSTANCE),
         new ArrayJavaType<>(BigDecimalJavaType.INSTANCE));
+    STRING_ARRAY_TYPE = new BasicArrayType<>(
+        new BasicTypeImpl<>(StringJavaType.INSTANCE, VarcharJdbcType.INSTANCE),
+        new ArrayJdbcType(VarcharJdbcType.INSTANCE),
+        new ArrayJavaType<>(StringJavaType.INSTANCE));
   }
 
   private ArrayTypes() {
@@ -55,6 +63,10 @@ public final class ArrayTypes {
 
   public static TypedParameterValue<BigDecimal[]> newBigDecimalArrayParameter(BigDecimal... value) {
     return new TypedParameterValue<>(BIG_DECIMAL_ARRAY_TYPE, value);
+  }
+  
+  public static TypedParameterValue<String[]> newLongArrayParameter(String... value) {
+    return new TypedParameterValue<>(STRING_ARRAY_TYPE, value);
   }
 
 }

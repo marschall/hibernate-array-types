@@ -33,6 +33,7 @@ class HsqldbArrayTests {
     for (int i = 0; i < 10; i++) {
       User user = new User();
       user.setId(i);
+      user.setLogin("login" + (i + 1));
       this.entityManager.persist(user);
     }
   }
@@ -71,6 +72,18 @@ class HsqldbArrayTests {
             .setParameter("userids", ArrayTypes.newBigDecimalArrayParameter(
                     BigDecimal.valueOf(1L), BigDecimal.valueOf(3L), BigDecimal.valueOf(5L), BigDecimal.valueOf(7L), BigDecimal.valueOf(9L)))
             .getResultList();
+    assertEquals(5, users.size());
+  }
+  
+  @Test
+  void bindParameterAnyString() {
+    List<User> users = this.entityManager.createNativeQuery(
+        "SELECT u.* "
+            + " FROM user_table u"
+            + " WHERE u.login IN(UNNEST(:logins))"
+            + " ORDER BY u.id", User.class)
+        .setParameter("logins", ArrayTypes.newLongArrayParameter("login1", "login3", "login5", "login7", "login9"))
+        .getResultList();
     assertEquals(5, users.size());
   }
 

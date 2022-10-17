@@ -1,5 +1,6 @@
 package com.github.marschall.hibernate.arraytypes.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -7,7 +8,11 @@ import jakarta.persistence.Id;
 public class User {
 
   @Id
+  @Column
   private Integer id;
+  
+  @Column
+  private String login;
 
   public Integer getId() {
     return id;
@@ -15,6 +20,14 @@ public class User {
 
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public String getLogin() {
+    return login;
+  }
+
+  public void setLogin(String login) {
+    this.login = login;
   }
 
 }

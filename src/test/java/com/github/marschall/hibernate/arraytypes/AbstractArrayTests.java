@@ -5,20 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.query.BindableType;
-import org.hibernate.query.TypedParameterValue;
-import org.hibernate.query.sqm.SqmExpressible;
-import org.hibernate.type.BasicArrayType;
-import org.hibernate.type.JavaObjectType;
-import org.hibernate.type.descriptor.java.ArrayJavaType;
-import org.hibernate.type.descriptor.java.IntegerJavaType;
-import org.hibernate.type.descriptor.java.JavaType;
-import org.hibernate.type.descriptor.java.ObjectJavaType;
-import org.hibernate.type.descriptor.jdbc.ArrayJdbcType;
-import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
-import org.hibernate.type.descriptor.jdbc.JdbcType;
-import org.hibernate.type.internal.BasicTypeImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -42,6 +28,7 @@ abstract class AbstractArrayTests {
     for (int i = 0; i < 10; i++) {
       User user = new User();
       user.setId(i);
+      user.setLogin("login" + (i + 1));
       this.entityManager.persist(user);
     }
   }
@@ -93,6 +80,18 @@ abstract class AbstractArrayTests {
             .setParameter("userids", ArrayTypes.newBigDecimalArrayParameter(
                     BigDecimal.valueOf(1L), BigDecimal.valueOf(3L), BigDecimal.valueOf(5L), BigDecimal.valueOf(7L), BigDecimal.valueOf(9L)))
             .getResultList();
+    assertEquals(5, users.size());
+  }
+
+  @Test
+  void bindParameterAnyString() {
+    List<User> users = this.entityManager.createNativeQuery(
+        "SELECT u.* "
+            + " FROM user_table u"
+            + " WHERE u.login = ANY(:logins)"
+            + " ORDER BY u.id", User.class)
+        .setParameter("logins", ArrayTypes.newLongArrayParameter("login1", "login3", "login5", "login7", "login9"))
+        .getResultList();
     assertEquals(5, users.size());
   }
 

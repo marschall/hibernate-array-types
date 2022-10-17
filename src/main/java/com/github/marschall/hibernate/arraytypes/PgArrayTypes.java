@@ -1,7 +1,5 @@
 package com.github.marschall.hibernate.arraytypes;
 
-import java.lang.reflect.Method;
-
 import org.hibernate.query.BindableType;
 import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
@@ -24,20 +22,11 @@ import org.hibernate.type.descriptor.jdbc.JdbcTypeIndicators;
 import org.hibernate.type.descriptor.jdbc.internal.JdbcLiteralFormatterArray;
 import org.hibernate.type.internal.BasicTypeImpl;
 
+/**
+ * Utility methods for creating {@link TypedParameterValue} instances on {@code int[]} and {@code long[]}
+ * on PostgreSQL.
+ */
 public final class PgArrayTypes {
-  private static final ClassValue<Method> NAME_BINDER = new ClassValue<Method>() {
-    @Override
-    protected Method computeValue(Class<?> type) {
-      try {
-        return type.getMethod( "setArray", String.class, java.sql.Array.class );
-      }
-      catch ( Exception ex ) {
-        // add logging? Did we get NoSuchMethodException or SecurityException?
-        // Doesn't matter which. We can't use it.
-      }
-      return null;
-    }
-  };
 
   private static final BindableType<int[]> INTEGER_ARRAY_TYPE;
 
