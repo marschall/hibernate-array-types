@@ -8,16 +8,16 @@ import org.hibernate.engine.jdbc.Size;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.IntegerJavaType;
-import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
+import org.hibernate.type.descriptor.java.JavaType;
+import org.hibernate.type.descriptor.jdbc.JdbcType;
 import org.postgresql.PGConnection;
 
 abstract class AbstractPgPrimitiveArrayValueBinder<T> implements ValueBinder<T> {
 
-  private final IntegerJdbcType elementJdbcType;
-  private  final IntegerJavaType elementJavaType;
+  private final JdbcType elementJdbcType;
+  private final JavaType elementJavaType;
 
-  protected AbstractPgPrimitiveArrayValueBinder(IntegerJdbcType elementJdbcType, IntegerJavaType elementJavaType) {
+  protected AbstractPgPrimitiveArrayValueBinder(JdbcType elementJdbcType, JavaType elementJavaType) {
     this.elementJdbcType = elementJdbcType;
     this.elementJavaType = elementJavaType;
   }
@@ -46,7 +46,7 @@ abstract class AbstractPgPrimitiveArrayValueBinder<T> implements ValueBinder<T> 
         .getDescriptor(elementJdbcType.getDefaultSqlTypeCode())
         .getTypeName(size);
     int cutIndex = typeName.indexOf('(');
-    if ( cutIndex > 0 ) {
+    if (cutIndex > 0) {
       // getTypeName for this case required length, etc, parameters.
       // Cut them out and use database defaults.
       typeName = typeName.substring( 0, cutIndex );

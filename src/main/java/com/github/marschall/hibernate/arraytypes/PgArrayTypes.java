@@ -9,10 +9,8 @@ import org.hibernate.type.BasicType;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.java.IntegerJavaType;
-import org.hibernate.type.descriptor.java.IntegerPrimitiveArrayJavaType;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.java.LongJavaType;
-import org.hibernate.type.descriptor.java.LongPrimitiveArrayJavaType;
 import org.hibernate.type.descriptor.jdbc.ArrayJdbcType;
 import org.hibernate.type.descriptor.jdbc.BigIntJdbcType;
 import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
@@ -35,10 +33,12 @@ public final class PgArrayTypes {
   static {
     INTEGER_ARRAY_TYPE = new IntArrayType(
         new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
-        new ArrayJdbcType(IntegerJdbcType.INSTANCE));
+        new ArrayJdbcType(IntegerJdbcType.INSTANCE),
+        PgIntArrayValueBinder.INSTANCE);
     LONG_ARRAY_TYPE = new LongArrayType(
         new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
-        new ArrayJdbcType(BigIntJdbcType.INSTANCE));
+        new ArrayJdbcType(BigIntJdbcType.INSTANCE),
+        PgLongArrayValueBinder.INSTANCE);
   }
 
   private PgArrayTypes() {
@@ -130,32 +130,6 @@ public final class PgArrayTypes {
       //  also, maybe move that logic into the ArrayJdbcType
       //noinspection unchecked
       return (BasicType<X>) this;
-    }
-
-  }
-
-  static final class IntArrayType extends PrimitiveArrayType<int[], Integer> {
-
-    IntArrayType(BasicType<Integer> baseDescriptor, JdbcType arrayJdbcType) {
-      super(baseDescriptor, IntegerPrimitiveArrayJavaType.INSTANCE, arrayJdbcType, PgIntArrayValueBinder.INSTANCE, IntArrayValueExtractor.INSTANCE);
-    }
-
-    @Override
-    public String getName() {
-      return "int[]";
-    }
-
-  }
-
-  static final class LongArrayType extends PrimitiveArrayType<long[], Long> {
-
-    LongArrayType(BasicType<Long> baseDescriptor, JdbcType arrayJdbcType) {
-      super(baseDescriptor, LongPrimitiveArrayJavaType.INSTANCE, arrayJdbcType, PgLongArrayValueBinder.INSTANCE, LongArrayValueExtractor.INSTANCE);
-    }
-
-    @Override
-    public String getName() {
-      return "long[]";
     }
 
   }
