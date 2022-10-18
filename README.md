@@ -26,6 +26,7 @@ Disadvantages
 * requires native queries with non-portable syntax
 * only a small number of databases are supported
 * works only with Hibernate, not other JPA providers
+* the API for Hibernate 6 is quite different
 
 
 H2 / PostgreSQL
