@@ -31,11 +31,11 @@ public final class PgArrayTypes {
   private static final BindableType<long[]> LONG_ARRAY_TYPE;
 
   static {
-    INTEGER_ARRAY_TYPE = new IntArrayType(
+    INTEGER_ARRAY_TYPE = PrimitiveArrayType.newPrimitiveIntArrayType(
         new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
         new ArrayJdbcType(IntegerJdbcType.INSTANCE),
         PgIntArrayValueBinder.INSTANCE);
-    LONG_ARRAY_TYPE = new LongArrayType(
+    LONG_ARRAY_TYPE = PrimitiveArrayType.newPrimitiveLongArrayType(
         new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
         new ArrayJdbcType(BigIntJdbcType.INSTANCE),
         PgLongArrayValueBinder.INSTANCE);

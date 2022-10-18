@@ -40,7 +40,7 @@ public final class OracleArrayTypes {
   }
 
   public static BindableType<int[]> newIntArrayType(String typeName) {
-    return new IntArrayType(
+    return PrimitiveArrayType.newPrimitiveIntArrayType(
         new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
         new OraclePrimitiveArrayType(typeName, IntegerJdbcType.INSTANCE),
         new OraclePrimitiveArrayValueBinder<>(typeName));
@@ -54,7 +54,7 @@ public final class OracleArrayTypes {
   }
 
   public static BindableType<long[]> newLongPrimitiveArrayType(String typeName) {
-    return new LongArrayType(
+    return PrimitiveArrayType.newPrimitiveLongArrayType(
         new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
         new OraclePrimitiveArrayType(typeName, BigIntJdbcType.INSTANCE),
         new OraclePrimitiveArrayValueBinder<>(typeName));
