@@ -5,8 +5,6 @@ import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.java.IntegerPrimitiveArrayJavaType;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
 
-import com.github.marschall.hibernate.arraytypes.PgArrayTypes.PrimitiveArrayType;
-
 final class IntArrayType extends PrimitiveArrayType<int[], Integer> {
 
   IntArrayType(BasicType<Integer> baseDescriptor, JdbcType arrayJdbcType, ValueBinder<int[]> jdbcValueBinder) {

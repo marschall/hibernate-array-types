@@ -1,24 +1,24 @@
 package com.github.marschall.hibernate.arraytypes;
 
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import org.hibernate.engine.jdbc.Size;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.query.BindableType;
 import org.hibernate.query.TypedParameterValue;
-import org.hibernate.type.AbstractSingleColumnStandardBasicType;
-import org.hibernate.type.AdjustableBasicType;
-import org.hibernate.type.BasicPluralType;
-import org.hibernate.type.BasicType;
 import org.hibernate.type.descriptor.ValueBinder;
-import org.hibernate.type.descriptor.ValueExtractor;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.IntegerJavaType;
 import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.java.LongJavaType;
 import org.hibernate.type.descriptor.jdbc.ArrayJdbcType;
 import org.hibernate.type.descriptor.jdbc.BigIntJdbcType;
 import org.hibernate.type.descriptor.jdbc.IntegerJdbcType;
-import org.hibernate.type.descriptor.jdbc.JdbcLiteralFormatter;
 import org.hibernate.type.descriptor.jdbc.JdbcType;
-import org.hibernate.type.descriptor.jdbc.JdbcTypeIndicators;
-import org.hibernate.type.descriptor.jdbc.internal.JdbcLiteralFormatterArray;
 import org.hibernate.type.internal.BasicTypeImpl;
+import org.postgresql.PGConnection;
 
 /**
  * Utility methods for creating {@link TypedParameterValue} instances on {@code int[]} and {@code long[]}
@@ -65,85 +65,81 @@ public final class PgArrayTypes {
     return new TypedParameterValue<>(LONG_ARRAY_TYPE, value);
   }
 
-  static final class PgPrimitiveIntArrayType extends ArrayJdbcType {
+}
 
-    PgPrimitiveIntArrayType(JdbcType elementJdbcType) {
-      super(IntegerJdbcType.INSTANCE);
-    }
+/**
+ * Abstract base class for {@link ValueBinder}s for arrays of primitive types on PostgreSQL.
+ *
+ * @param <T> the array type to bind
+ */
+abstract class PgPrimitiveArrayValueBinder<T> implements ValueBinder<T> {
 
-    @Override
-    public <X> ValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor) {
-      return (ValueBinder<X>) PgIntArrayValueBinder.INSTANCE;
-    }
+  private final JdbcType elementJdbcType;
+  private final JavaType<?> elementJavaType;
 
+  protected PgPrimitiveArrayValueBinder(JdbcType elementJdbcType, JavaType<?> elementJavaType) {
+    this.elementJdbcType = elementJdbcType;
+    this.elementJavaType = elementJavaType;
   }
 
-  static final class PgPrimitiveLongArrayType extends ArrayJdbcType {
-
-    PgPrimitiveLongArrayType(JdbcType elementJdbcType) {
-      super(BigIntJdbcType.INSTANCE);
-    }
-
-    @Override
-    public <X> ValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor) {
-      return (ValueBinder<X>) PgLongArrayValueBinder.INSTANCE;
-    }
-
+  @Override
+  public void bind(PreparedStatement st, T value, int index, WrapperOptions options) throws SQLException {
+    SharedSessionContractImplementor session = options.getSession();
+    String typeName = getTypeName(session);
+    java.sql.Array array = createSqlArray(value, session, typeName);
+    st.setObject(index, array);
   }
 
-  static abstract class PrimitiveArrayType<C, E> extends AbstractSingleColumnStandardBasicType<C>
-    implements AdjustableBasicType<C>, BasicPluralType<C, E> {
+  private java.sql.Array createSqlArray(T value, SharedSessionContractImplementor session, String typeName)
+      throws SQLException {
+    PGConnection pgConnection = session.getJdbcCoordinator().getLogicalConnection().getPhysicalConnection().unwrap(PGConnection.class);
+    return pgConnection.createArrayOf(typeName, value);
+  }
 
-    private final BasicType<E> baseDescriptor;
-    private final ValueBinder<C> jdbcValueBinder;
-    private final ValueExtractor<C> jdbcValueExtractor;
-    private final JdbcLiteralFormatter<C> jdbcLiteralFormatter;
-
-    PrimitiveArrayType(BasicType<E> baseDescriptor, JavaType<C> arrayTypeDescriptor,
-        JdbcType arrayJdbcType, ValueBinder<C> jdbcValueBinder, ValueExtractor<C> jdbcValueExtractor) {
-      super(arrayJdbcType, arrayTypeDescriptor);
-      this.baseDescriptor = baseDescriptor;
-      this.jdbcValueBinder = jdbcValueBinder;
-      this.jdbcValueExtractor = jdbcValueExtractor;
-      this.jdbcLiteralFormatter = new JdbcLiteralFormatterArray(
-          baseDescriptor.getJavaTypeDescriptor(),
-          super.getJdbcLiteralFormatter()
-          );
+  private String getTypeName(SharedSessionContractImplementor session) {
+    Size size = session.getJdbcServices()
+        .getDialect()
+        .getSizeStrategy()
+        .resolveSize(elementJdbcType, elementJavaType, null, null, null);
+    String typeName = session.getTypeConfiguration()
+        .getDdlTypeRegistry()
+        .getDescriptor(elementJdbcType.getDefaultSqlTypeCode())
+        .getTypeName(size);
+    int cutIndex = typeName.indexOf('(');
+    if (cutIndex > 0) {
+      // getTypeName for this case required length, etc, parameters.
+      // Cut them out and use database defaults.
+      typeName = typeName.substring( 0, cutIndex );
     }
+    return typeName;
+  }
 
-    @Override
-    public BasicType<E> getElementType() {
-      return baseDescriptor;
-    }
+  @Override
+  public void bind(CallableStatement st, T value, String name, WrapperOptions options) throws SQLException {
+    SharedSessionContractImplementor session = options.getSession();
+    String typeName = getTypeName(session);
+    java.sql.Array array = createSqlArray(value, session, typeName);
+    st.setObject(name, array);
+  }
 
-    @Override
-    protected boolean registerUnderJavaType() {
-      return true;
-    }
+}
 
-    @Override
-    public ValueExtractor<C> getJdbcValueExtractor() {
-      return jdbcValueExtractor;
-    }
+final class PgIntArrayValueBinder extends PgPrimitiveArrayValueBinder<int[]> {
 
-    @Override
-    public ValueBinder<C> getJdbcValueBinder() {
-      return jdbcValueBinder;
-    }
+  static final ValueBinder<int[]> INSTANCE = new PgIntArrayValueBinder();
 
-    @Override
-    public JdbcLiteralFormatter getJdbcLiteralFormatter() {
-      return jdbcLiteralFormatter;
-    }
+  private PgIntArrayValueBinder() {
+    super(IntegerJdbcType.INSTANCE, IntegerJavaType.INSTANCE);
+  }
 
-    @Override
-    public <X> BasicType<X> resolveIndicatedType(JdbcTypeIndicators indicators, JavaType<X> domainJtd) {
-      // TODO: maybe fallback to some encoding by default if the DB doesn't support arrays natively?
-      //  also, maybe move that logic into the ArrayJdbcType
-      //noinspection unchecked
-      return (BasicType<X>) this;
-    }
+}
 
+final class PgLongArrayValueBinder extends PgPrimitiveArrayValueBinder<long[]> {
+
+  static final ValueBinder<long[]> INSTANCE = new PgLongArrayValueBinder();
+
+  private PgLongArrayValueBinder() {
+    super(BigIntJdbcType.INSTANCE, LongJavaType.INSTANCE);
   }
 
 }
