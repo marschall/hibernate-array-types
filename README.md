@@ -1,7 +1,7 @@
 Hibernate Array Types [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.marschall/hibernate-array-types/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.marschall/hibernate-array-types) [![Javadocs](https://www.javadoc.io/badge/com.github.marschall/hibernate-array-types.svg)](https://www.javadoc.io/doc/com.github.marschall/hibernate-array-types)  [![Build Status](https://travis-ci.org/marschall/hibernate-array-types.svg?branch=master)](https://travis-ci.org/marschall/hibernate-array-types)
 =====================
 
-User types for binding IN lists to arrays in Hibernate.
+User types for binding IN lists to arrays in Hibernate 5.
 
 ```xml
 <dependency>
@@ -62,7 +62,7 @@ entityManager.createNativeQuery("""
 
 You'll have to create a type of the appropriate name, for example like this
 
-```
+```sql
 CREATE OR REPLACE TYPE USER_ID_TYPE IS TABLE OF NUMBER;
 ```
 
@@ -95,7 +95,7 @@ Limitations
 * Works only with native queries.
 * HSQLDB and Oracle require custom SQL syntax.
 * Supporting Oracle requires different classes and the creation of custom database types.
-* Primitive types are only supported on Oracle and PostgresSQL and requires different classes.
+* Primitive types are only supported on Oracle and PostgresSQL and require different classes.
 * Does not work with the following databases as yet do not support SQL arrays:
   * Derby
   * Firebird
