@@ -35,11 +35,12 @@ abstract class AbstractArrayTests {
 
   @Test
   void bindParameterAnyInteger() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.*"
-                    + " FROM user_table u"
-                    + " WHERE u.id = ANY(:userids)"
-                    + " ORDER BY u.id", User.class)
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id = ANY(:userids)
+             ORDER BY u.id
+             """, User.class)
             .setParameter("userids", ArrayTypes.newIntegerArrayParameter(1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());
@@ -48,23 +49,25 @@ abstract class AbstractArrayTests {
   @Disabled
   @Test
   void bindParameterAnyIntegerJpql() {
-    List<User> users = this.entityManager.createQuery(
-        "SELECT u"
-            + " FROM user_table u"
-            + " WHERE u.id IN(:userids)"
-            + " ORDER BY u.id", User.class)
-        .setParameter("userids", ArrayTypes.newIntegerArrayParameter(1, 3, 5, 7, 9))
-        .getResultList();
+    List<User> users = this.entityManager.createQuery("""
+                       SELECT u
+                         FROM user_table u
+                        WHERE u.id IN(:userids)
+                        ORDER BY u.id
+            """, User.class)
+            .setParameter("userids", ArrayTypes.newIntegerArrayParameter(1, 3, 5, 7, 9))
+            .getResultList();
     assertEquals(5, users.size());
   }
 
   @Test
   void bindParameterAnyLong() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.*"
-                    + " FROM user_table u"
-                    + " WHERE u.id = ANY(:userids)"
-                    + " ORDER BY u.id", User.class)
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id = ANY(:userids)
+             ORDER BY u.id
+             """, User.class)
             .setParameter("userids", ArrayTypes.newLongArrayParameter(1L, 3L, 5L, 7L, 9L))
             .getResultList();
     assertEquals(5, users.size());
@@ -72,11 +75,12 @@ abstract class AbstractArrayTests {
 
   @Test
   void bindParameterAnyBigDecimal() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.* "
-                    + " FROM user_table u"
-                    + " WHERE u.id = ANY(:userids)"
-                    + " ORDER BY u.id", User.class)
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id = ANY(:userids)
+             ORDER BY u.id
+             """, User.class)
             .setParameter("userids", ArrayTypes.newBigDecimalArrayParameter(
                     BigDecimal.valueOf(1L), BigDecimal.valueOf(3L), BigDecimal.valueOf(5L), BigDecimal.valueOf(7L), BigDecimal.valueOf(9L)))
             .getResultList();
@@ -85,26 +89,27 @@ abstract class AbstractArrayTests {
 
   @Test
   void bindParameterAnyString() {
-    List<User> users = this.entityManager.createNativeQuery(
-        "SELECT u.* "
-            + " FROM user_table u"
-            + " WHERE u.login = ANY(:logins)"
-            + " ORDER BY u.id", User.class)
-        .setParameter("logins", ArrayTypes.newLongArrayParameter("login1", "login3", "login5", "login7", "login9"))
-        .getResultList();
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+             FROM user_table u
+             WHERE u.login = ANY(:logins)
+             ORDER BY u.id
+             """, User.class)
+            .setParameter("logins", ArrayTypes.newLongArrayParameter("login1", "login3", "login5", "login7", "login9"))
+            .getResultList();
     assertEquals(5, users.size());
   }
 
-//  @Test
-//  void bindParameterAnyInteger() {
-//    List<User> users = this.entityManager.createNativeQuery(
-//                    "SELECT u.* "
-//                    + " FROM user_table u"
-//                    + " WHERE u.id = ANY(:userids)"
-//                    + " ORDER BY u.id", User.class)
-//            .setParameter("userids", ArrayType.newParameter("INTEGER", 1, 3, 5, 7, 9))
-//            .getResultList();
-//    assertEquals(5, users.size());
-//  }
+  //  @Test
+  //  void bindParameterAnyInteger() {
+  //    List<User> users = this.entityManager.createNativeQuery(
+  //                    "SELECT u.* "
+  //                    + " FROM user_table u"
+  //                    + " WHERE u.id = ANY(:userids)"
+  //                    + " ORDER BY u.id", User.class)
+  //            .setParameter("userids", ArrayType.newParameter("INTEGER", 1, 3, 5, 7, 9))
+  //            .getResultList();
+  //    assertEquals(5, users.size());
+  //  }
 
 }

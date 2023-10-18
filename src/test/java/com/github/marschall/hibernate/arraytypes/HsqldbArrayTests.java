@@ -40,11 +40,12 @@ class HsqldbArrayTests {
 
   @Test
   void bindParameterAnyGenericInteger() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.*"
-                    + " FROM user_table u"
-                    + " WHERE u.id IN(UNNEST(:userids))"
-                    + " ORDER BY u.id", User.class)
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id IN(UNNEST(:userids))
+             ORDER BY u.id
+             """, User.class)
             .setParameter("userids", ArrayTypes.newIntegerArrayParameter(1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());
@@ -52,38 +53,40 @@ class HsqldbArrayTests {
 
   @Test
   void bindParameterAnyLong() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.*"
-                    + " FROM user_table u"
-                    + " WHERE u.id IN(UNNEST(:userids))"
-                    + " ORDER BY u.id", User.class)
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+             FROM user_table u
+             WHERE u.id IN(UNNEST(:userids))
+             ORDER BY u.id
+             """, User.class)
             .setParameter("userids", ArrayTypes.newLongArrayParameter(1L, 3L, 5L, 7L, 9L))
             .getResultList();
     assertEquals(5, users.size());
   }
 
-  @Test
-  void bindParameterAnyBigDecimal() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.* "
-                    + " FROM user_table u"
-                    + " WHERE u.id IN(UNNEST(:userids))"
-                    + " ORDER BY u.id", User.class)
+  @Test  void bindParameterAnyBigDecimal() {
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id IN(UNNEST(:userids))
+             ORDER BY u.id
+             """, User.class)
             .setParameter("userids", ArrayTypes.newBigDecimalArrayParameter(
                     BigDecimal.valueOf(1L), BigDecimal.valueOf(3L), BigDecimal.valueOf(5L), BigDecimal.valueOf(7L), BigDecimal.valueOf(9L)))
             .getResultList();
     assertEquals(5, users.size());
   }
-  
+
   @Test
   void bindParameterAnyString() {
-    List<User> users = this.entityManager.createNativeQuery(
-        "SELECT u.* "
-            + " FROM user_table u"
-            + " WHERE u.login IN(UNNEST(:logins))"
-            + " ORDER BY u.id", User.class)
-        .setParameter("logins", ArrayTypes.newLongArrayParameter("login1", "login3", "login5", "login7", "login9"))
-        .getResultList();
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+             FROM user_table u
+             WHERE u.login IN(UNNEST(:logins))
+             ORDER BY u.id
+             """, User.class)
+            .setParameter("logins", ArrayTypes.newLongArrayParameter("login1", "login3", "login5", "login7", "login9"))
+            .getResultList();
     assertEquals(5, users.size());
   }
 

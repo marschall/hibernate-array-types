@@ -35,28 +35,28 @@ public final class OracleArrayTypes {
   public static BindableType<Integer[]> newIntegerArrayType(String typeName) {
     return new BasicArrayType<>(
         new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
-        new OracleArrayJdbcType(typeName, IntegerJdbcType.INSTANCE),
+        new OracleArrayJdbcType(IntegerJdbcType.INSTANCE, typeName),
         new ArrayJavaType<>(IntegerJavaType.INSTANCE));
   }
 
   public static BindableType<int[]> newIntArrayType(String typeName) {
     return PrimitiveArrayType.newPrimitiveIntArrayType(
         new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
-        new OraclePrimitiveArrayType(typeName, IntegerJdbcType.INSTANCE),
+        new OraclePrimitiveArrayType(IntegerJdbcType.INSTANCE, typeName),
         new OraclePrimitiveArrayValueBinder<>(typeName));
   }
 
   public static BindableType<Long[]> newLongReferenceArrayType(String typeName) {
     return new BasicArrayType<>(
         new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
-        new OracleArrayJdbcType(typeName, BigIntJdbcType.INSTANCE),
+        new OracleArrayJdbcType(BigIntJdbcType.INSTANCE, typeName),
         new ArrayJavaType<>(LongJavaType.INSTANCE));
   }
 
   public static BindableType<long[]> newLongPrimitiveArrayType(String typeName) {
     return PrimitiveArrayType.newPrimitiveLongArrayType(
         new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
-        new OraclePrimitiveArrayType(typeName, BigIntJdbcType.INSTANCE),
+        new OraclePrimitiveArrayType(BigIntJdbcType.INSTANCE, typeName),
         new OraclePrimitiveArrayValueBinder<>(typeName));
   }
 
@@ -69,8 +69,8 @@ final class OraclePrimitiveArrayType extends OracleArrayJdbcType {
   
   private final String typeName;
   
-  OraclePrimitiveArrayType(String typeName, JdbcType elementJdbcType) {
-    super(typeName, elementJdbcType);
+  OraclePrimitiveArrayType(JdbcType elementJdbcType, String typeName) {
+    super(elementJdbcType, typeName);
     this.typeName = typeName;
   }
   

@@ -30,7 +30,7 @@ class OracleArrayTests {
   private static final String ARRAY_TYPE_NAME = "TEST_ARRAY_TYPE";
 
   private static final BindableType<Integer[]> INTEGER_ARRAY_TYPE = OracleArrayTypes.newIntegerArrayType(ARRAY_TYPE_NAME);
-  
+
   private static final BindableType<int[]> INT_ARRAY_TYPE = OracleArrayTypes.newIntArrayType(ARRAY_TYPE_NAME);
 
   @PersistenceContext
@@ -48,11 +48,12 @@ class OracleArrayTests {
 
   @Test
   void referenceParameter() {
-    List<User> users = this.entityManager.createNativeQuery(
-                "SELECT u.* "
-                 + "FROM user_table u "
-                 + "WHERE u.id IN(SELECT column_value FROM TABLE(:userids))"
-                 + "ORDER BY u.id", User.class)
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id IN(SELECT column_value FROM TABLE(:userids))
+             ORDER BY u.id
+            """, User.class)
             .setParameter("userids", new TypedParameterValue<>(INTEGER_ARRAY_TYPE, new Integer[] {1, 3, 5, 7, 9}))
             .getResultList();
     assertEquals(5, users.size());
@@ -60,13 +61,14 @@ class OracleArrayTests {
 
   @Test
   void primitiveParameter() {
-    List<User> users = this.entityManager.createNativeQuery(
-          "SELECT u.* "
-            + "FROM user_table u "
-            + "WHERE u.id IN(SELECT column_value FROM TABLE(:userids))"
-            + "ORDER BY u.id", User.class)
-        .setParameter("userids", new TypedParameterValue<>(INT_ARRAY_TYPE, new int[] {1, 3, 5, 7, 9}))
-        .getResultList();
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id IN(SELECT column_value FROM TABLE(:userids))
+             ORDER BY u.id
+            """, User.class)
+            .setParameter("userids", new TypedParameterValue<>(INT_ARRAY_TYPE, new int[] {1, 3, 5, 7, 9}))
+            .getResultList();
     assertEquals(5, users.size());
   }
 

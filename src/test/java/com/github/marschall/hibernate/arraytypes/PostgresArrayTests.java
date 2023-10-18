@@ -24,11 +24,12 @@ class PostgresArrayTests extends AbstractArrayTests {
 
   @Test
   void bindParameterAnyInt() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.* "
-                    + " FROM user_table u"
-                    + " WHERE u.id = ANY(:userids)"
-                    + " ORDER BY u.id", User.class)
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id = ANY(:userids)
+             ORDER BY u.id
+             """, User.class)
             .setParameter("userids", PgArrayTypes.newIntegerArrayParameter(1, 3, 5, 7, 9))
             .getResultList();
     assertEquals(5, users.size());
@@ -36,11 +37,11 @@ class PostgresArrayTests extends AbstractArrayTests {
 
   @Test
   void bindParameterAnyLong() {
-    List<User> users = this.entityManager.createNativeQuery(
-                    "SELECT u.* "
-                    + " FROM user_table u"
-                    + " WHERE u.id = ANY(:userids)"
-                    + " ORDER BY u.id", User.class)
+    List<User> users = this.entityManager.createNativeQuery("""
+            SELECT u.*
+              FROM user_table u
+             WHERE u.id = ANY(:userids)
+             ORDER BY u.id""", User.class)
             .setParameter("userids", PgArrayTypes.newLongArrayParameter(1L, 3L, 5L, 7L, 9L))
             .getResultList();
     assertEquals(5, users.size());
