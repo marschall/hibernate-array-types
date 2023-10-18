@@ -5,6 +5,14 @@ User types for binding IN lists to arrays in Hibernate 6.
 
 Versions 1.x are fore Hibernate 5.x.
 
+```xml
+<dependency>
+  <groupId>com.github.marschall</groupId>
+  <artifactId>hibernate-array-types</artifactId>
+  <version>2.0.1</version>
+</dependency>
+```
+
 Advantages
 ----------
 
