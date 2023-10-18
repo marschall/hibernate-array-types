@@ -34,30 +34,30 @@ public final class OracleArrayTypes {
 
   public static BindableType<Integer[]> newIntegerArrayType(String typeName) {
     return new BasicArrayType<>(
-        new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
-        new OracleArrayJdbcType(IntegerJdbcType.INSTANCE, typeName),
-        new ArrayJavaType<>(IntegerJavaType.INSTANCE));
+            new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
+            new OracleArrayJdbcType(IntegerJdbcType.INSTANCE, typeName),
+            new ArrayJavaType<>(IntegerJavaType.INSTANCE));
   }
 
   public static BindableType<int[]> newIntArrayType(String typeName) {
     return PrimitiveArrayType.newPrimitiveIntArrayType(
-        new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
-        new OraclePrimitiveArrayType(IntegerJdbcType.INSTANCE, typeName),
-        new OraclePrimitiveArrayValueBinder<>(typeName));
+            new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
+            new OraclePrimitiveArrayType(IntegerJdbcType.INSTANCE, typeName),
+            new OraclePrimitiveArrayValueBinder<>(typeName));
   }
 
   public static BindableType<Long[]> newLongReferenceArrayType(String typeName) {
     return new BasicArrayType<>(
-        new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
-        new OracleArrayJdbcType(BigIntJdbcType.INSTANCE, typeName),
-        new ArrayJavaType<>(LongJavaType.INSTANCE));
+            new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
+            new OracleArrayJdbcType(BigIntJdbcType.INSTANCE, typeName),
+            new ArrayJavaType<>(LongJavaType.INSTANCE));
   }
 
   public static BindableType<long[]> newLongPrimitiveArrayType(String typeName) {
     return PrimitiveArrayType.newPrimitiveLongArrayType(
-        new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
-        new OraclePrimitiveArrayType(BigIntJdbcType.INSTANCE, typeName),
-        new OraclePrimitiveArrayValueBinder<>(typeName));
+            new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
+            new OraclePrimitiveArrayType(BigIntJdbcType.INSTANCE, typeName),
+            new OraclePrimitiveArrayValueBinder<>(typeName));
   }
 
 }
@@ -66,19 +66,19 @@ public final class OracleArrayTypes {
  * Specialization of {@link OracleArrayJdbcType} for arrays of primitive types.
  */
 final class OraclePrimitiveArrayType extends OracleArrayJdbcType {
-  
+
   private final String typeName;
-  
+
   OraclePrimitiveArrayType(JdbcType elementJdbcType, String typeName) {
     super(elementJdbcType, typeName);
     this.typeName = typeName;
   }
-  
+
   @Override
   public <X> ValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor) {
     return new OraclePrimitiveArrayValueBinder<>(this.typeName);
   }
-  
+
 }
 
 /**
@@ -102,7 +102,7 @@ final class OraclePrimitiveArrayValueBinder<T> implements ValueBinder<T> {
   }
 
   private java.sql.Array createSqlArray(T value, SharedSessionContractImplementor session)
-      throws SQLException {
+          throws SQLException {
     OracleConnection oracleConnection = session.getJdbcCoordinator().getLogicalConnection().getPhysicalConnection().unwrap(OracleConnection.class);
     return oracleConnection.createOracleArray(this.typeName, value);
   }

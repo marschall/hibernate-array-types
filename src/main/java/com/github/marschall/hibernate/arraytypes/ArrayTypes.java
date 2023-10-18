@@ -27,26 +27,26 @@ public final class ArrayTypes {
   private static final BindableType<Long[]> LONG_ARRAY_TYPE;
 
   private static final BindableType<BigDecimal[]> BIG_DECIMAL_ARRAY_TYPE;
-  
+
   private static final BindableType<String[]> STRING_ARRAY_TYPE;
 
   static {
     INTEGER_ARRAY_TYPE = new BasicArrayType<>(
-        new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
-        new ArrayJdbcType(IntegerJdbcType.INSTANCE),
-        new ArrayJavaType<>(IntegerJavaType.INSTANCE));
+            new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
+            new ArrayJdbcType(IntegerJdbcType.INSTANCE),
+            new ArrayJavaType<>(IntegerJavaType.INSTANCE));
     LONG_ARRAY_TYPE = new BasicArrayType<>(
-        new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
-        new ArrayJdbcType(BigIntJdbcType.INSTANCE),
-        new ArrayJavaType<>(LongJavaType.INSTANCE));
+            new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
+            new ArrayJdbcType(BigIntJdbcType.INSTANCE),
+            new ArrayJavaType<>(LongJavaType.INSTANCE));
     BIG_DECIMAL_ARRAY_TYPE = new BasicArrayType<>(
-        new BasicTypeImpl<>(BigDecimalJavaType.INSTANCE, DecimalJdbcType.INSTANCE),
-        new ArrayJdbcType(DecimalJdbcType.INSTANCE),
-        new ArrayJavaType<>(BigDecimalJavaType.INSTANCE));
+            new BasicTypeImpl<>(BigDecimalJavaType.INSTANCE, DecimalJdbcType.INSTANCE),
+            new ArrayJdbcType(DecimalJdbcType.INSTANCE),
+            new ArrayJavaType<>(BigDecimalJavaType.INSTANCE));
     STRING_ARRAY_TYPE = new BasicArrayType<>(
-        new BasicTypeImpl<>(StringJavaType.INSTANCE, VarcharJdbcType.INSTANCE),
-        new ArrayJdbcType(VarcharJdbcType.INSTANCE),
-        new ArrayJavaType<>(StringJavaType.INSTANCE));
+            new BasicTypeImpl<>(StringJavaType.INSTANCE, VarcharJdbcType.INSTANCE),
+            new ArrayJdbcType(VarcharJdbcType.INSTANCE),
+            new ArrayJavaType<>(StringJavaType.INSTANCE));
   }
 
   private ArrayTypes() {

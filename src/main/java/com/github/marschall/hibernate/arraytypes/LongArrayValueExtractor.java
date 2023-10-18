@@ -9,7 +9,7 @@ import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
 
 final class LongArrayValueExtractor implements ValueExtractor<long[]> {
-  
+
   static final ValueExtractor<long[]> INSTANCE = new LongArrayValueExtractor();
 
   private LongArrayValueExtractor() {

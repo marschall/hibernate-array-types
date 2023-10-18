@@ -32,13 +32,13 @@ public final class PgArrayTypes {
 
   static {
     INTEGER_ARRAY_TYPE = PrimitiveArrayType.newPrimitiveIntArrayType(
-        new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
-        new ArrayJdbcType(IntegerJdbcType.INSTANCE),
-        PgIntArrayValueBinder.INSTANCE);
+            new BasicTypeImpl<>(IntegerJavaType.INSTANCE, IntegerJdbcType.INSTANCE),
+            new ArrayJdbcType(IntegerJdbcType.INSTANCE),
+            PgIntArrayValueBinder.INSTANCE);
     LONG_ARRAY_TYPE = PrimitiveArrayType.newPrimitiveLongArrayType(
-        new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
-        new ArrayJdbcType(BigIntJdbcType.INSTANCE),
-        PgLongArrayValueBinder.INSTANCE);
+            new BasicTypeImpl<>(LongJavaType.INSTANCE, BigIntJdbcType.INSTANCE),
+            new ArrayJdbcType(BigIntJdbcType.INSTANCE),
+            PgLongArrayValueBinder.INSTANCE);
   }
 
   private PgArrayTypes() {
@@ -91,20 +91,20 @@ abstract class PgPrimitiveArrayValueBinder<T> implements ValueBinder<T> {
   }
 
   private java.sql.Array createSqlArray(T value, SharedSessionContractImplementor session, String typeName)
-      throws SQLException {
+          throws SQLException {
     PGConnection pgConnection = session.getJdbcCoordinator().getLogicalConnection().getPhysicalConnection().unwrap(PGConnection.class);
     return pgConnection.createArrayOf(typeName, value);
   }
 
   private String getTypeName(SharedSessionContractImplementor session) {
     Size size = session.getJdbcServices()
-        .getDialect()
-        .getSizeStrategy()
-        .resolveSize(elementJdbcType, elementJavaType, null, null, null);
+            .getDialect()
+            .getSizeStrategy()
+            .resolveSize(elementJdbcType, elementJavaType, null, null, null);
     String typeName = session.getTypeConfiguration()
-        .getDdlTypeRegistry()
-        .getDescriptor(elementJdbcType.getDefaultSqlTypeCode())
-        .getTypeName(size);
+            .getDdlTypeRegistry()
+            .getDescriptor(elementJdbcType.getDefaultSqlTypeCode())
+            .getTypeName(size);
     int cutIndex = typeName.indexOf('(');
     if (cutIndex > 0) {
       // getTypeName for this case required length, etc, parameters.

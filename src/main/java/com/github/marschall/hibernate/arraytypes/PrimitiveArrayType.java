@@ -21,7 +21,7 @@ import org.hibernate.type.descriptor.jdbc.internal.JdbcLiteralFormatterArray;
  * @param <E> the array element type
  */
 final class PrimitiveArrayType<C, E> extends AbstractSingleColumnStandardBasicType<C>
-  implements AdjustableBasicType<C>, BasicPluralType<C, E> {
+    implements AdjustableBasicType<C>, BasicPluralType<C, E> {
 
   private final BasicType<E> baseDescriptor;
   private final ValueBinder<C> jdbcValueBinder;
@@ -30,22 +30,22 @@ final class PrimitiveArrayType<C, E> extends AbstractSingleColumnStandardBasicTy
   private final String name;
 
   PrimitiveArrayType(BasicType<E> baseDescriptor, String name, JavaType<C> arrayTypeDescriptor,
-      JdbcType arrayJdbcType, ValueBinder<C> jdbcValueBinder, ValueExtractor<C> jdbcValueExtractor) {
+          JdbcType arrayJdbcType, ValueBinder<C> jdbcValueBinder, ValueExtractor<C> jdbcValueExtractor) {
     super(arrayJdbcType, arrayTypeDescriptor);
     this.baseDescriptor = baseDescriptor;
     this.name = name;
     this.jdbcValueBinder = jdbcValueBinder;
     this.jdbcValueExtractor = jdbcValueExtractor;
     this.jdbcLiteralFormatter = new JdbcLiteralFormatterArray(
-        baseDescriptor.getJavaTypeDescriptor(),
-        super.getJdbcLiteralFormatter()
-        );
+            baseDescriptor.getJavaTypeDescriptor(),
+            super.getJdbcLiteralFormatter()
+            );
   }
-  
+
   static PrimitiveArrayType<int[], Integer> newPrimitiveIntArrayType(BasicType<Integer> baseDescriptor, JdbcType arrayJdbcType, ValueBinder<int[]> jdbcValueBinder) {
     return new PrimitiveArrayType<>(baseDescriptor, "int[]", IntegerPrimitiveArrayJavaType.INSTANCE, arrayJdbcType, jdbcValueBinder, IntArrayValueExtractor.INSTANCE);
   }
-  
+
   static PrimitiveArrayType<long[], Long> newPrimitiveLongArrayType(BasicType<Long> baseDescriptor, JdbcType arrayJdbcType, ValueBinder<long[]> jdbcValueBinder) {
     return new PrimitiveArrayType<>(baseDescriptor, "long[]", LongPrimitiveArrayJavaType.INSTANCE, arrayJdbcType, jdbcValueBinder, LongArrayValueExtractor.INSTANCE);
   }
