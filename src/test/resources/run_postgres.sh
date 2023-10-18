@@ -10,4 +10,4 @@ docker run --name postgres-hibernate-array \
  -p 5432:5432 \
  --mount type=tmpfs,destination=/var/lib/postgresql/data \
  -v ${DIRECTORY}/sql/postgres:/docker-entrypoint-initdb.d \
- -d postgres:14.5-alpine
+ -d postgres:16.0-alpine
