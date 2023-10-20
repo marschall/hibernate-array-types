@@ -11,6 +11,7 @@ User types for binding IN lists to arrays in Hibernate 5.
 </dependency>
 ```
 
+Versions 2.x are for Hibernate 6.
 
 Advantages
 ----------
